@@ -10,6 +10,44 @@ knitr::opts_chunk$set(echo = TRUE)
 # Problem 1
 
 # Problem 2
+Iyer (2010) is interested in the effect of direct rule by the British during the colonial period on public goods provision in India, compared to indirect rule through native or "princely" states. Lord Dalhousie, Governor-General of India from 1848 to 1856, announced that: 
+
+\textit{On all occasions where heirs natural shall fail, the territory should be made to lapse and adoption should not be permitted, excepting in those cases in which some strong political reason may render it expedient to depart from this general rule.}
+
+In other words, districts in which a native ruler lacking an heir died during the period of Dalhousie’s rule should be annexed by the British, according to this “Doctrine of Lapse” policy. Iyer argues that the death of an heirless ruler in the period of Dalhousie’s rule can be used as an instrumental variable for direct colonial rule.
+
+(a) What two groups of units would you compare when doing an intent-to-treat analysis here? Numerically, how is intent-to-treat analysis related to instrumental-variables analysis?
+
+For an intent to treat analysis, we would use the variable that is purportedly "as good as random" for the treatment assignment variable, in this case the death of an heirless ruler in the period of Dalhousie's rule. The outcome variable is public goods provision. We would compare the (public good provisions of) the group of units where there was a death of a native ruler without an heir, to the group of units where there was not a death of native ruler (or there was the death of one, but there was an heir).
+
+Here, the instrumental-variables analysis could be equivalent to the CACE (in the bivariate, binary treatment case). Numerically, the intent-to-treat analysis is the numerator of this.
+
+(b) Define Compliers, Always-Treats, Never-Treats, and Defiers in this context.
+
+Compliers: Those units where the native ruler died without an heir, and British direct rule was taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was not imposed - it remained a princely state.
+
+Always-Treats: Those units where the native ruler died without an heir, and British direct rule was taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was taken up.
+
+Never-Treats: Those units where the native ruler died without an heir, and British direct rule was not taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was not imposed - it remained a princely state.
+
+Defiers: Those units where the native ruler died without an heir, and British direct rule was not taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was imposed.
+
+(c) List the assumptions that are required to estimate a Complier average causal effect.
+In this context, which of those assumptions seem plausible (if any), and which seem
+suspect (if any)? Could you use any empirical methods to evaluate their plausibility?
+
+There are 5 assumptions required to estimate a Complier average causal effect.
+
+1. SUTVA (non-interference) - ok 
+2. random assignment to treatment and control - ok
+3. potential outcomes are fixed attributes of each unit - ok
+4. exclusion restriction - ok (unless specific people into public goods)
+5. no defier types - ok
+
+(d) In some of her analyses, Iyer compares districts in which heirless rulers died during Dalhousie’s rule to the remaining districts. Propose a design modification that could
+increase the plausibility of the assumptions you described in (c) and say how it does so.
+
+
 
 # Problem 3
 
