@@ -18,9 +18,9 @@ In other words, districts in which a native ruler lacking an heir died during th
 
 (a) What two groups of units would you compare when doing an intent-to-treat analysis here? Numerically, how is intent-to-treat analysis related to instrumental-variables analysis?
 
-For an intent to treat analysis, we would use the variable that is purportedly "as good as random" for the treatment assignment variable, in this case the death of an heirless ruler in the period of Dalhousie's rule. The outcome variable is public goods provision. We would compare the (public good provisions of) the group of units where there was a death of a native ruler without an heir, to the group of units where there was not a death of native ruler (or there was the death of one, but there was an heir).
+For an intent to treat analysis, we would use the variable that is purportedly "as good as random" for the treatment assignment variable, in this case the death of an heirless ruler in the period of Dalhousie's rule. The outcome variable is public goods provision. We would compare the (public good provisions of) the group of units where there was a death of a native ruler without an heir, to the group of units where there was not a death of native ruler or where there was the death of one, but there was an heir.
 
-Here, the instrumental-variables analysis could be equivalent to the CACE (in the bivariate, binary treatment case). Numerically, the intent-to-treat analysis is the numerator of this.
+Here, the instrumental-variables analysis is equivalent to the CACE (in the bivariate, binary treatment case). Numerically, the intent-to-treat analysis is the numerator of this.
 
 (b) Define Compliers, Always-Treats, Never-Treats, and Defiers in this context.
 
@@ -38,16 +38,29 @@ suspect (if any)? Could you use any empirical methods to evaluate their plausibi
 
 There are 5 assumptions required to estimate a Complier average causal effect.
 
-1. SUTVA (non-interference) - ok 
-2. random assignment to treatment and control - ok
-3. potential outcomes are fixed attributes of each unit - ok
-4. exclusion restriction - ok (unless specific people into public goods)
-5. no defier types - ok
+1. SUTVA (non-interference) 
+2. random assignment to treatment and control 
+3. potential outcomes are fixed attributes of each unit
+4. exclusion restriction 
+5. no defier types 
+6. there are compliers, always takers, and never takers
+
+SUTVA seems plausible. It is unlikely that the death of a ruler (without an heir) would affect the treatment status or outcome of a neighboring district. We could test this by a placebo test wherein we examine whether the death of an heirless ruler in a district affects the outcome of a neighboring district. 
+
+Random assignment of death of a ruler (without an heir) seems plausibly as-if random. Death seems like it strikes exogenously (aka not according to a clear pattern differentiated by districts). We could test this empirically with a balance test and an F statistic on pre-treatment covariates.
+
+Potential outcomes seem to be a good way to think about this problem, and it is feasible to think about them as fixed attributes of a unit, as in the Neyman model. We can't test this. 
+
+Exclusion restriction seems broadly plausible. Yet, we could think of ways in which it could be challenged. For example, if princely states where there are no heirs (and the ruler dies) are those places in which mortality levels were higher (and thus the heirs died) because of bad development conditions, and that this could have long-term effects on the public goods outcomes of the district. We can't test this assumption, but have to reason it theoretically and substantively.
+
+No defier types seems a reasonable assumption. This would mean that in places where the ruler died without an heir, the British didn't take over; and where there was no death or where there was an heir, the British did take over. We can't test this assumption. 
+
+It seems plausible to have compliers, always takers, and never takers. We can't test this assumption however. 
 
 (d) In some of her analyses, Iyer compares districts in which heirless rulers died during Dalhousie’s rule to the remaining districts. Propose a design modification that could
 increase the plausibility of the assumptions you described in (c) and say how it does so.
 
-
+A design modification could be to compare only the districts in which the ruler died (group 1: with heir; group 2: without heir), and exclude the districts where no death occurred. This might be sensible because districts where rulers are dying might be substantively different from those where they're not, in important ways that affect outcomes (like in mortality rates). As stated above, this could have challenges for the feasibility of the exclusion restriction. Thus, restricting the comparison only to districts with similar levels of deaths of rulers would increase our belief in this assumption.
 
 # Problem 3
 
