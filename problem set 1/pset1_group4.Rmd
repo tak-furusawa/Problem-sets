@@ -67,6 +67,61 @@ A design modification could be to compare only the districts in which the ruler 
 # Problem 4
 
 # Problem 5
+(a) The decline cannot readily be attributed to the effects of the new law. There are likely other events that happened during the time period that may affect the outcome of voting. Further, the law is not implemented as-if randomly across districts - it is implemented according to the level of poverty in an area. There could be important confounding variables with the level of poverty and voting. 
+
+(b) Intention to treat analysis. 
+
+```{r}
+# There are 2000 units assigned to control, 75 percent have a value of 1 
+# There are 2000 units assigned to treatment, 75.25 % have a value of 1
+
+treatment <- c(rep(1,2000), rep(0, 2000))
+
+outcome <- c(rep(1,1500), rep(0, 500), rep(1, 1505), rep(0, 495))
+
+data <- cbind(treatment, outcome)
+
+ITT <- function(treatment, outcome){
+  
+  mean_control <- mean(outcome[treatment == 0])
+  mean_treatment <- mean(outcome[treatment == 1])
+  itt <- mean_treatment - mean_control
+  
+  #standard error
+  treated <- outcome[treatment == 1]
+  var1 <- sum((treated - mean(treated))^2) / (length(treated) - 1)
+  
+  not_treated <- outcome[treatment == 0]
+  var0 <- sum((not_treated - mean(not_treated))^2) / (length(not_treated) - 1)
+  
+  #se_itt
+  se_itt <- sqrt((var1/length(treated)) + var0/length(not_treated))
+  
+  # t stat
+  t_stat <- itt / se_itt
+  
+  df <- (var1/length(treated) + var0/length(not_treated))^2 /
+((var1/length(treated))^2 / (length(treated) - 1) +
+(var0/length(not_treated))^2 / (length(not_treated) - 1))
+  
+  # p value
+  p_value <- pt(-abs(t_stat), df = df, ncp = 0, lower.tail = TRUE) + 
+    pt(abs(t_stat), df = df, ncp = 0, lower.tail = FALSE)
+  
+  return(c("ITT" = itt, "SE ITT" = se_itt, "p-value" = p_value))
+}
+
+itt <- ITT(treatment, outcome)
+
+print(itt)
+```
+We find that the intention to treatment analysis gives an estimate of -0.0025, and that the effect is not statistically different from 0. 
+
+(c) Treatment receipt is "learning about the lower level of the fine." 
+
+(d) Conduct IV analysis to estimate the complier average causal effect. Also, estimate the turnout (percentage voting) among Compliers in the control group.
+
+(e) List the assumptions necessary for the IV analysis. 
 
 # Problem 6
 
