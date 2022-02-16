@@ -64,7 +64,9 @@ A design modification could be to compare only the districts in which the ruler 
 
 # Problem 3
 
+
 # Problem 4
+
 
 # Problem 5
 (a) The decline cannot readily be attributed to the effects of the new law. There are likely other events that happened during the time period that may affect the outcome of voting. Further, the law is not implemented as-if randomly across districts - it is implemented according to the level of poverty in an area. There could be important confounding variables with the level of poverty and voting. 
@@ -75,11 +77,13 @@ A design modification could be to compare only the districts in which the ruler 
 # There are 2000 units assigned to control, 75 percent have a value of 1 
 # There are 2000 units assigned to treatment, 75.25 % have a value of 1
 
-treatment <- c(rep(1,2000), rep(0, 2000))
+treatment <- c(rep(0,2000), rep(1, 2000))
 
-outcome <- c(rep(1,1500), rep(0, 500), rep(1, 1505), rep(0, 495))
+overall_outcome <- c(rep(1,1500), rep(0, 500), rep(1, 1505), rep(0, 495))
 
-data <- cbind(treatment, outcome)
+receipt <- c(rep(0,2000), rep(1,500), rep(0,1500))
+
+data <- cbind(treatment, overall_outcome, receipt)
 
 ITT <- function(treatment, outcome){
   
@@ -111,17 +115,87 @@ ITT <- function(treatment, outcome){
   return(c("ITT" = itt, "SE ITT" = se_itt, "p-value" = p_value))
 }
 
-itt <- ITT(treatment, outcome)
+itt <- ITT(treatment, overall_outcome)
 
 print(itt)
 ```
-We find that the intention to treatment analysis gives an estimate of -0.0025, and that the effect is not statistically different from 0. 
+We find that the intention to treatment analysis gives an estimate of -0.0025, and that the effect is not statistically different from 0. In other words, the effect of being assigned to the treatment is not statistically significant.
 
-(c) Treatment receipt is "learning about the lower level of the fine." 
+(c) Treatment receipt is "learning about the lower level of the fine." Thus, there is non-compliance in the experiment, shown in Table 1, where we see that there are people who are assigned to treatment, but did not receive the treatment (did not learn of the fine). The always-treats are those who are assigned to treatment and receive the treatment, and when assigned to control would still receive the treatment; we assume here that there aren't any, since we see only one-sided non compliance and since we would presume balancedness due to randomization since we don't see any noncompliance in the control group (thus no always takers) we assume there are none in the treatment. The never treats are those who when assigned to treatment receive the control, and when assigned to control receive the control; in this study these are the people assigned to treatment who did not receive the treatment (assuming no defiers). Finally, the compliers are those who when assigned to treatment receive the treatment, and when assigned to control receive the control; in this study, those in the treatment group who received the treatment could either be always-treats or compliers, and those in the control who received the control could be never-treats or compliers.
 
 (d) Conduct IV analysis to estimate the complier average causal effect. Also, estimate the turnout (percentage voting) among Compliers in the control group.
 
-(e) List the assumptions necessary for the IV analysis. 
+```{r}
+## First, we will conduct IV analysis to estimate the complier 
+## average causal effect.
+
+# The treatment assignment instruments for treatment receipt in the 
+# instrumental-variables estimator (wald estimator)
+
+# in this case (with a binary treatment and a binary outcome)
+# we can estimate the CACE as the same as the IV estimator
+# It is Y^t - Y^c / X^t - X^c
+
+# first, we get the numerator, which is the ITT that we already calculated
+
+intention_to_treat <- 0.00250000
+
+# now we need to get the denominator, which is the proportion of compliers
+
+# first we estimate share of never-takers among those assigned to treatment
+share_never_treated <- 1500/2000
+
+# now we need to estimate the number of compliers among assigned to control
+compliers_incontrol <- 2000 - (share_never_treated*2000)
+
+# now we get the estimated share of compliers in the study 
+total_compliers <- compliers_incontrol + 500 
+
+share_compliers <- total_compliers/4000
+
+# now we calculate the CACE estimate
+cace <- intention_to_treat/share_compliers
+
+print(cace)
+
+# now we can estimate the turnout rate among compliers assigned to the control
+# group
+
+# we have already estimated the number of compliers in the control group
+
+compliers_incontrol
+
+# we want the proportion of compliers in control
+share_compliers_control <- compliers_incontrol/2000
+
+# then we want the share of never treats in the treatment * their voting rate
+voting_nevertreat <- share_never_treated*73
+
+# now we can solve the equation for x, which is the estimate of turnout for 
+# the compliers in the control
+turnout_compliers_control <- (75 - voting_nevertreat)/share_compliers_control
+
+
+
+```
+We estimate a CACE of 0.01. We also estimate the turnout among Compliers in the control group as 81%.  
+
+(e) Assumptions necessary for the IV analysis:
+
+1) SUTVA (non-interference)
+2) Random assignment to treatment and control
+3) Potential outcomes are fixed attributes of each unit
+4) Exclusion restriction
+5) No defier types
+
+Random assignment (2) seems plausible, given that the researchers experimentally manipulated the treatment. It seems plausible to assume that potential outcomes are fixed attributes of each unit (3). It seems fair to assume that there are no defier types (5) - after all, it is difficult to think of a unit that would seek out information if given the control, and ignore the information if given the treatment. 
+
+SUTVA (1) might face problems. It is possible that if people live closely together, the fact of someone in the treatment group receiving the treatment of information might lead this person to speak about it to someone assigned to control, thus affecting the outcome of the person in control who was not supposed to receive information. If the researchers can be certain that these units are not in contact, the threat of breaking SUTVA is less likely.
+
+The exclusion restriction (4) can possibly be violated. This would be if assignment to treatment or control affects the outcome through another channel other than through the receipt of treatment (control). This could be the case if receiving information makes people more likely to tell their families to go vote because they will otherwise face a financial penalty, for example.
+
+If either SUTVA or the exclusion restriction (or both) turn out not to be valid assumptions, then our analysis becomes less convincing, since it rests on these assumptions. With that said, it is possible to provide some evidence in support of SUTVA (or lack of interference) if the data is available - data on the outcomes of neighbors could be used here. The exclusion restriction would need to be substantiated with substantive and theoretical reasoning, there are no ready-made statistical tests to test its validity. 
+
 
 # Problem 6
 
