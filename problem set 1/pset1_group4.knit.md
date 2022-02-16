@@ -3,13 +3,12 @@ title: "Problem Set 1 - Group 4"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 # Problem 1
 A) estimate the ACE using ITT Analysis
-```{r}
+
+```r
 # ITT Analysis looks at the causal effect based solely on treatment assignment.
 
 #First, we calculate the mean for the control.
@@ -21,7 +20,13 @@ mean_treatment <- ((0*80) + (1*70))/150
 #Then we simply subtract mean_control from mean_treatment (refer to Lecture 3 Slide 22)
 itt <- (mean_treatment - mean_control)
 print(itt)
+```
 
+```
+## [1] 0.09166667
+```
+
+```r
 # The ACE using ITT is 0.09167. 
 ```
 The ACE using ITT is 0.09167.
@@ -37,7 +42,8 @@ Within the control, it is not possible to know exactly how many people are compl
 We know that the proportion of compliers in the treatment group is approximately 33.3%. Therefore, we can use this proportion to estimate that the control group also has 33.3% compliance, or 800 (total number in control) * 0.3333 = 267. Therefore, our estimation is that, when considering never-takers, there should be about 267 compliers in the control. 
 
 # D) Estimate the Proportion of Compliers
-```{r}
+
+```r
 # The proportion of compliers is the proportion of subjects assigned treatment that receive treatment MINUS the proportion of subjets assigned control that instead receive treatment (refer to Lecture 3 slides 26-28)
 
 #First, we find the proportion of assigned treatment who receive treatment 
@@ -49,17 +55,30 @@ xc <- (0/800)
 #Then, we simply subtract xc from xt
 prop_compliers <- xt - xc
 print(prop_compliers)
+```
 
+```
+## [1] 0.3333333
+```
+
+```r
 #The proportion of compliers is 0.3333 or 33.33%
 ```
 The proportion of compliers is 0.3333 or 33.33%
 
 # E) Estimate the Complier Average Causal Effect
-``` {r}
+
+```r
 #The CACE is simply the ITT ACE divided by the Proportion of Compliers (refer to Lecture 3 slide 28)
 cace <- itt/prop_compliers
 print(cace)
+```
 
+```
+## [1] 0.275
+```
+
+```r
 #The CACE is 0.275.
 ```
 The CACE is 0.275.
@@ -177,7 +196,8 @@ Further, did a considerable number of people migrate out of Peru? Did the compos
 
 (b) Intention to treat analysis. 
 
-```{r}
+
+```r
 # There are 2000 units assigned to control, 75 percent have a value of 1 
 # There are 2000 units assigned to treatment, 75.25 % have a value of 1
 
@@ -223,13 +243,19 @@ itt <- ITT(treatment, overall_outcome)
 
 print(itt)
 ```
+
+```
+##        ITT     SE ITT    p-value 
+## 0.00250000 0.01367353 0.85493672
+```
 We find that the intention to treatment analysis gives an estimate of -0.0025, and that the effect is not statistically different from 0. In other words, the effect of being assigned to the treatment is not statistically significant.
 
 (c) Treatment receipt is "learning about the lower level of the fine." Thus, there is non-compliance in the experiment, shown in Table 1, where we see that there are people who are assigned to treatment, but did not receive the treatment (did not learn of the fine). The always-treats are those who are assigned to treatment and receive the treatment, and when assigned to control would still receive the treatment; we assume here that there aren't any, since we see only one-sided non compliance and since we would presume balancedness due to randomization since we don't see any noncompliance in the control group (thus no always takers) we assume there are none in the treatment. The never treats are those who when assigned to treatment receive the control, and when assigned to control receive the control; in this study these are the people assigned to treatment who did not receive the treatment (assuming no defiers). Finally, the compliers are those who when assigned to treatment receive the treatment, and when assigned to control receive the control; in this study, those in the treatment group who received the treatment could either be always-treats or compliers, and those in the control who received the control could be never-treats or compliers.
 
 (d) Conduct IV analysis to estimate the complier average causal effect. Also, estimate the turnout (percentage voting) among Compliers in the control group.
 
-```{r}
+
+```r
 ## First, we will conduct IV analysis to estimate the complier 
 ## average causal effect.
 
@@ -261,14 +287,26 @@ share_compliers <- total_compliers/4000
 cace <- intention_to_treat/share_compliers
 
 print(cace)
+```
 
+```
+## [1] 0.01
+```
+
+```r
 # now we can estimate the turnout rate among compliers assigned to the control
 # group
 
 # we have already estimated the number of compliers in the control group
 
 compliers_incontrol
+```
 
+```
+## [1] 500
+```
+
+```r
 # we want the proportion of compliers in control
 share_compliers_control <- compliers_incontrol/2000
 
@@ -278,9 +316,6 @@ voting_nevertreat <- share_never_treated*73
 # now we can solve the equation for x, which is the estimate of turnout for 
 # the compliers in the control
 turnout_compliers_control <- (75 - voting_nevertreat)/share_compliers_control
-
-
-
 ```
 We estimate a CACE of 0.01. We also estimate the turnout among Compliers in the control group as 81%.  
 
@@ -310,7 +345,8 @@ This same logic can explain the discrepencies in college education; the Pakistan
 
 # B) Estimate the ITT for Global Islamic Practice Index
 
-``` {r}
+
+```r
 #Bring in the data (downloaded .dta file from bcourses)
 #install.packages("haven")
 library(haven)
@@ -335,44 +371,123 @@ itt <- function(outcome, treatment){
 
 # ITT for Variable 1 x_s14aq1
 itt(hajj$x_s14aq1, hajj$success)
+```
+
+```
+##       ITT 
+## 0.1053567
+```
+
+```r
 #ITT is 0.1054
 
 # ITT for Variable 2 x_s14aq3
 itt(hajj$x_s14aq3, hajj$success)
+```
+
+```
+##        ITT 
+## 0.07635088
+```
+
+```r
 #ITT is 0.0764
 
 # ITT for Variable 3 x_s14aq4
 itt(hajj$x_s14aq4, hajj$success)
+```
+
+```
+##       ITT 
+## 0.0314386
+```
+
+```r
 #ITT is 0.0314
 
 # ITT for Variable 4 x_s14aq5
 itt(hajj$x_s14aq5, hajj$success)
+```
+
+```
+##        ITT 
+## 0.06702948
+```
+
+```r
 #ITT is 0.06703
 
 # ITT for Variable 5 x_s14aq6
 itt(hajj$x_s14aq6, hajj$success)
+```
+
+```
+##       ITT 
+## 0.1619415
+```
+
+```r
 #ITT is 0.1619
 
 # ITT for Variable 6 x_s14bq2
 itt(hajj$x_s14bq2, hajj$success)
+```
+
+```
+##        ITT 
+## 0.01430367
+```
+
+```r
 #ITT is 0.0143
 
 # ITT for Variable 7 x_s14aq8
 itt(hajj$x_s14aq8, hajj$success)
+```
+
+```
+##        ITT 
+## 0.01853699
+```
+
+```r
 #ITT is 0.01854
 
 # ITT for Variable 8 x_s14aq9
 itt(hajj$x_s14aq9, hajj$success)
+```
+
+```
+##        ITT 
+## 0.04115241
+```
+
+```r
 #ITT is 0.04115
 
 # ITT for Variable 9 x_s14aq12
 itt(hajj$x_s14aq12, hajj$success)
+```
+
+```
+##        ITT 
+## 0.02046784
+```
+
+```r
 #ITT is 0.02046
 
 # ITT for Variable 10 x_s14aq13
 itt(hajj$x_s14aq13, hajj$success)
-#ITT is 0.03254
+```
 
+```
+##        ITT 
+## 0.03253801
+```
+
+```r
+#ITT is 0.03254
 ```
 As we can see from the ten ITTs above, every single one is positive--indicating that winning the Hajj lottery had at least some kind of positive increase on the Global Islamic Practice among those who won the lottery.
 
