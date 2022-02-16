@@ -387,12 +387,10 @@ We recognize that the standard deviation of potential outcomes under control of 
 
 This is on the denominator of the expression for the standardized effect for the binary variable. Thus, it will be minimized when the denominator (above) is maximized. One way to solve this problem, then is to find the value of p for which the standardized effect for the binary variable is minimized - a maximization problem of the expression of p.
 
-$$
-\begin{aligned}
+$$\begin{aligned}
 & \underset{p}{\text{maximize}}
 & f(p) = \sqrt{p (1-p)} \\
 & \text{subject to} & 0 \geq p \leq 1 \\ \\ \\
-
 &\frac{\partial f}{\partial p} = \frac{1}{2}(p(1-p))^{\frac{-1}{2}} \times ((1-p) - p) = 0\\
 & = \frac{1}{2}(p(1-p))^{\frac{-1}{2}} (1-p) - \frac{1}{2}p(p(1-p))^{\frac{-1}{2}} \\
 & = \frac{1}{2}p^{\frac{-1}{2}} (1-p)^{\frac{-1}{2}}(1-p) - \frac{1}{2}p \times p^{\frac{-1}{2}}(1-p)^{\frac{-1}{2}} \\
@@ -401,12 +399,13 @@ $$
 & p = 1-p \\
 & 2p = 1 \\
 & p = 1/2 \\
+\end{aligned}$$
 
-\end{aligned}
-$$
 So the value of the standardized effect for the binary variable is minimized when p = 0.5, or when the denominator = $(0.5 \times (1-0.5))^{\frac{1}{2}} = 0.5$. 
 
 Thus, the minimum possible absolute value of the standardized effect for the binary variable in terms of the unstandardized variable is equal to $\tau^j_{stand} = \frac{\tau^j_{unstand}}{0.5}$.
+
+How does $\tau^j_{stand}$ vary with respect to p? For this, we would want to take the derivative of the expression for $\tau^j_{stand}$ with respect to p and evaluate the sign of the derivative. 
 
 $\tau^j_{stand}$ varies positively with respect to the proportion of units in the control when p<0.5. In other words the derivative with respect to p is a positive function when the proportion of units is less than half. In this case, as p increases, so does $\tau^j_{stand}$. The opposite is true for when p is greater than 0.5 - the derivative is negative. 
 
