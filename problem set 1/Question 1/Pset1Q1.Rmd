@@ -35,9 +35,9 @@ Within the treatment, only 50 people are considered compliers. We know this beca
 We are able to make this calculation because we are given both whether they were assigned treatment and whether they received treatment (compliance). Without both of these parts, we would be unable to make this calculation.
 
 # C) Within control, how many are compliers?
-Within the control, all 800 people are compliers. We know this because all 800 people in the control were NOT assigned treatment and did NOT receive treatment. A non-complier would have not been assigned the treatment but still received it anyways; since there is no indication that this occured, we can confidently assume all 800 people in the control are compliers.
+Within the control, it is not possible to know exactly how many people are compliers because of the possibility of never-takers. However, we can ESTIMATE the number of compliers and non-compliers by using the same proportions from the treatment group because of randomization. 
 
-There is a possibility that some of the people in the control group are defectors--that is, they responded as though they received the treatment even though they didn't--but since we have no information on them in this problem's info, we do not include this possibility in our calculations.
+We know that the proportion of compliers in the treatment group is approximately 33.3%. Therefore, we can use this proportion to estimate that the control group also has 33.3% compliance, or 800 (total number in control) * 0.3333 = 267. Therefore, our estimation is that, when considering never-takers, there should be about 267 compliers in the control. 
 
 # D) Estimate the Proportion of Compliers
 ```{r}
