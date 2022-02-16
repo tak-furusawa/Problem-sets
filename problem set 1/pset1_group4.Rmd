@@ -1,5 +1,5 @@
 ---
-title: "problem set 1 - group 4"
+title: "Problem Set 1 - Group 4"
 output: pdf_document
 ---
 
@@ -8,6 +8,62 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Problem 1
+A) estimate the ACE using ITT Analysis
+```{r}
+# ITT Analysis looks at the causal effect based solely on treatment assignment.
+
+#First, we calculate the mean for the control.
+mean_control <- ((0*500) + (1*300))/800
+
+#Next, we calculate the mean for the treatment. 
+mean_treatment <- ((0*80) + (1*70))/150
+
+#Then we simply subtract mean_control from mean_treatment (refer to Lecture 3 Slide 22)
+itt <- (mean_treatment - mean_control)
+print(itt)
+
+# The ACE using ITT is 0.09167. 
+```
+The ACE using ITT is 0.09167.
+
+# B) Within treatment, how many are compliers?
+Within the treatment, only 50 people are considered compliers. We know this because they were both assigned treatment AND received treatment. The other 100 people within the treatment group were assigned treatment but did not receive treatment, indicating that they did not comply. 
+
+We are able to make this calculation because we are given both whether they were assigned treatment and whether they received treatment (compliance). Without both of these parts, we would be unable to make this calculation.
+
+# C) Within control, how many are compliers?
+Within the control, it is not possible to know exactly how many people are compliers because of the possibility of never-takers. However, we can ESTIMATE the number of compliers and non-compliers by using the same proportions from the treatment group because of randomization. 
+
+We know that the proportion of compliers in the treatment group is approximately 33.3%. Therefore, we can use this proportion to estimate that the control group also has 33.3% compliance, or 800 (total number in control) * 0.3333 = 267. Therefore, our estimation is that, when considering never-takers, there should be about 267 compliers in the control. 
+
+# D) Estimate the Proportion of Compliers
+```{r}
+# The proportion of compliers is the proportion of subjects assigned treatment that receive treatment MINUS the proportion of subjets assigned control that instead receive treatment (refer to Lecture 3 slides 26-28)
+
+#First, we find the proportion of assigned treatment who receive treatment 
+xt <- (50/150)
+
+#Next, we find the proportion of assigned control who receive treatment
+xc <- (0/800)
+
+#Then, we simply subtract xc from xt
+prop_compliers <- xt - xc
+print(prop_compliers)
+
+#The proportion of compliers is 0.3333 or 33.33%
+```
+The proportion of compliers is 0.3333 or 33.33%
+
+# E) Estimate the Complier Average Causal Effect
+``` {r}
+#The CACE is simply the ITT ACE divided by the Proportion of Compliers (refer to Lecture 3 slide 28)
+cace <- itt/prop_compliers
+print(cace)
+
+#The CACE is 0.275.
+```
+The CACE is 0.275.
+
 
 # Problem 2
 Iyer (2010) is interested in the effect of direct rule by the British during the colonial period on public goods provision in India, compared to indirect rule through native or "princely" states. Lord Dalhousie, Governor-General of India from 1848 to 1856, announced that: 
@@ -64,8 +120,56 @@ A design modification could be to compare only the districts in which the ruler 
 
 # Problem 3
 
+## (a) Make a list of the assumptions needed for IV analysis, and interpret them (say what they mean) for this study.
+
+\begin{enumerate}
+  \item $Y_{i}=\alpha+\beta X_{i}+\epsilon_{i}$. We assume the model itself. We also assume that there is an endogeneity problem in the model, i.e.: that $X_{i}$ and $\epsilon_{i}$ are not independent. For this example, we assume that the outcome of budgetary transfers is a function of voter turnout plus some random variable, or the error term. 
+  \item Independence of $Z_{i}$ and $\epsilon_{i}$. This means that $Z_{i}$ is exogenous to the model and is not correlated with the error term or the random component of the data generation process. For this example, the error term and the instrument of rainfall are independent. 
+  \item Exclusion restriction. This means that the exogenous variable (instrument) only affects the outcome $Y_{i}$ through its effect on the endogenous variable $X_{i}$. For this example, rainfall only affects budgetary transfers through its effect on voter turnout. 
+\end{enumerate}
+
+## (b) Do you have any potential concerns about any of the assumptions you listed in part i? Which ones, and why?
+
+The main concern we see with these assumptions is related to the exclusion restriction assumption. While rainfall can have an impact on budgetary transfers via its potential effect on voter turnout, it is possible that rainfall can have a direct effect on budgetary transfers as well. For example, by affecting certain crops or causing flooding, heavy rainfall can push legislators to increase budgetary transfers to affected areas. 
+
+Further, if there are any reasons why other potential omitted variables could affect..    
+
+## (c)
+
+A first-attempt tool could be to evaluate the statistical relationship between voter turnout and budgetary transfers. They could plot the data and use descriptive statistics to evaluate any correlations or trends, or run regressions on observational data for descriptive purposes only. Similarly, Smedley could plot the correlation between $Z_{i}$ and $X_{i}$ to ensure they are reasonably correlated. Further they could theoretically and qualitatively explore the validity of the model itself and explore the possibility of heterogenous partial effects since voter turnout can be affected by variables other than rainfall. Then, Smedley could perform a model specification test with an additional instrument. They would calculate the variance of the coefficients $\hat B_{1}$ and $\hat B_{2}$ to see if they are equal. 
+
+## (ii) 
+
+## (a) 
+The intent-to-treat analysis is any analysis performed according to how subjects were intended to get treatment. In this case, the analysis would separate those municipalities that were selected to receive get-out-the-vote efforts (the treatment group) and those that were not (the control group) to compare subsequent budgetary transfers post-election (the dependent variable). 
+
+The instrumental-variables analysis would employ an instrument that is reasonably correlated with voter-turnout (the endogenous independent variable or regressor) and calculate its effect on budgetary transfers. The instrument would be whether the municipality was selected to receive get-out-the-vote efforts, which should be correlated with actual voter turnout.
+
+
+## (b) Make a list of the assumptions needed for IV analysis, and interpret them (say what they mean) for this study. Do you have any potential concerns about any of these assumptions? Which ones, and why? 
+
+\begin{enumerate}
+  \item $Y_{i}=\alpha+\beta X_{i}+\epsilon_{i}$. We assume the model itself. We also assume that there is endogeneity in the model, i.e.: that $X_{i}$ and $\epsilon_{i}$ are not independent. For this example, we assume that the outcome of budgetary transfers is a function of voter turnout plus some random variable, or the error term.  
+  \item Independence of $Z_{i}$ and $\epsilon_{i}$. This means that $Z_{i}$ is exogenous to the model and is not correlated with the error term or the random component of the data generation process. For this example, the error term and the instrument of get-out-the-vote efforts are independent. A concern related to this assumption may be that municipalities with more or less past budgetary transfers may be purposefully selected for get-out-the-vote efforts. Randomization of the treatment and control municipalities would in theory balances out covariates and potential omitted variables. 
+  
+  \item Exclusion restriction. This means that the exogenous variable (instrument) only affects the outcome $Y_{i}$ through its effect on the endogenous variable $X_{i}$. In this case we assume that get-out-the-vote efforts only affect budgetary transfers through their effect on voter turnout. It may be the case that get-out-the-vote efforts are not well designed such that they do not only affect turnout but also affect budgetary transfers. Perhaps legislators who saw an increase in voter turnout in the areas they represent may feel more pressured by their constituents to allocate resources to their communities. 
+\end{enumerate}
+
+## (c) What are the potential costs and benefits of this second research design, relative to the first?
+
+One potential benefit of this research design is that through randomization, concerns about omitted variables related to the possible effects of rainfall on both voter turnout and budgetary transfers may be reduced. Another potential benefit could be that get-out-the-vote efforts may be better correlated to voter turnout than rainfall in a way that also reduces the possibility of heterogenous partial effects. 
+
+However, this second design may produce compliance issues. Randomization is not enough by itself to estimate the actual treatment effect. Additionally, an RCT may be more expensive to implement than retrieving rainfall data. Further, there may be ethical concerns with contacting real voters prior to real elections. 
+
+Lastly, both designs present concerns that may invalidate the exclusion restriction. And while this assumption is difficult to test, it is theoretically possible in both cases that the instrument affects the outcome of interest beyond its direct impact on the exogenous regressor.
+
 
 # Problem 4
+
+When the exogeneity is violated, we assume that there is a confounder behind Z and Y or Y directly affects X.
+Since t-test just shows Z and X are correlated, high t-value doesn't guarantee the exogeneity.
+
+Further, did a considerable number of people migrate out of Peru? Did the composition of candidate tickets deter people from voting? Theoretically there are countless explanations why turnout could have declined that make it difficult, at first glance, to isolate the effect of the law on voter turnout.
 
 
 # Problem 5
@@ -198,5 +302,86 @@ If either SUTVA or the exclusion restriction (or both) turn out not to be valid 
 
 
 # Problem 6
+
+# A) 
+There is evidence of the "truncation of the extremes of socioeconomic distribution" evident in Table II, particularly when comparing the Pakistani average to the sample average of literacy and college education. The Pakistani population has an illteracy rate of 0.482, but the sample's illiteracy rate is approximately 8 percentage points lower at 0.402. This is consistent with the quoted claim above because those who are lowest in socioeconomic status are too poor to attend Hajj, and this same group also has the highest levels of illiteracy. Thus, they are underrepresented in the sample.
+
+This same logic can explain the discrepencies in college education; the Pakistani population average is 0.21, whereas the sample is smaller at only 0.178. Those higher socioeconomic status are more likely to be college educated AND are more likely to attend Hajj through private trip planning instead of through the governmental lottery program. Thus, we can expect the sample to have a lower overall education level than the general Pakistani public.
+
+# B) Estimate the ITT for Global Islamic Practice Index
+
+``` {r}
+#Bring in the data (downloaded .dta file from bcourses)
+#install.packages("haven")
+library(haven)
+hajj_public <- read_dta("Downloads/hajj_public.dta")
+hajj <- hajj_public
+
+#Create an itt function
+itt <- function(outcome, treatment){
+  
+# restrict to non-missing observations
+  treatment <- treatment[!is.na(outcome)]
+  outcome <- outcome[!is.na(outcome)]
+
+# calculate itterence in means
+  mean_control <- mean(outcome[treatment==0])
+  mean_treated <- mean(outcome[treatment==1])
+  itt <- mean_treated - mean_control
+  
+# prep output
+  return(c(`ITT`= itt))
+}
+
+# ITT for Variable 1 x_s14aq1
+itt(hajj$x_s14aq1, hajj$success)
+#ITT is 0.1054
+
+# ITT for Variable 2 x_s14aq3
+itt(hajj$x_s14aq3, hajj$success)
+#ITT is 0.0764
+
+# ITT for Variable 3 x_s14aq4
+itt(hajj$x_s14aq4, hajj$success)
+#ITT is 0.0314
+
+# ITT for Variable 4 x_s14aq5
+itt(hajj$x_s14aq5, hajj$success)
+#ITT is 0.06703
+
+# ITT for Variable 5 x_s14aq6
+itt(hajj$x_s14aq6, hajj$success)
+#ITT is 0.1619
+
+# ITT for Variable 6 x_s14bq2
+itt(hajj$x_s14bq2, hajj$success)
+#ITT is 0.0143
+
+# ITT for Variable 7 x_s14aq8
+itt(hajj$x_s14aq8, hajj$success)
+#ITT is 0.01854
+
+# ITT for Variable 8 x_s14aq9
+itt(hajj$x_s14aq9, hajj$success)
+#ITT is 0.04115
+
+# ITT for Variable 9 x_s14aq12
+itt(hajj$x_s14aq12, hajj$success)
+#ITT is 0.02046
+
+# ITT for Variable 10 x_s14aq13
+itt(hajj$x_s14aq13, hajj$success)
+#ITT is 0.03254
+
+```
+As we can see from the ten ITTs above, every single one is positive--indicating that winning the Hajj lottery had at least some kind of positive increase on the Global Islamic Practice among those who won the lottery.
+
+# C) Do all of the variables in the Global Islamic Practice index belong there?
+Yes, conceptually each of the ten variables for Global Islamic Practice index make sense for gauging level of commitment/practice to Islam. Perhaps the main variable that might be questionable is including whether or not the person "can read the Qu'ran". The reason this one might not make sense is because we know that almost 50% of the Pakistani population is illiterate, meaning that pratically half of the sample would automatically fail this indicator, even if they are otherwise a committed/engaged Muslim. 
+
+# D)
+While the exclusion restriction is critical to IV analysis strategy, we learned in Lecture 4 that the IVLS estimator is biased but consistent given the model. Though it is biased, it can be more or less biased based upon how large the sample size is. Therefore, we cannot assume that that this is an unbiased estimate of $\beta^k$.
+
+# E)
 
 
