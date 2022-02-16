@@ -13,7 +13,57 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Problem 3
 
+## (a) Make a list of the assumptions needed for IV analysis, and interpret them (say what they mean) for this study.
+
+\begin{enumerate}
+  \item $Y_{i}=\alpha+\beta X_{i}+\epsilon_{i}$. We assume the model itself. We also assume that there is an endogeneity problem in the model, i.e.: that $X_{i}$ and $/epsilon_{i}$ are not independent. For this example, we assume that the outcome of budgetary transfers is a function of voter turnout plus some random variable, or the error term. 
+  \item Independence of $Z_{i}$ and $\epsilon_{i}$. This means that $Z_{i}$ is exogenous to the model and is not correlated with the error term or the random component of the data generation process. For this example, the error term and the instrument of rainfall are independent. 
+  \item Exclusion restriction. This means that the exogenous variable (instrument) only affects the outcome $Y_{i}$ through its effect on the endogenous variable $X_{i}$. For this example, rainfall only affects budgetary transfers through its effect on voter turnout. 
+\end{enumerate}
+
+## (b) Do you have any potential concerns about any of the assumptions you listed in part i? Which ones, and why?
+
+The main concern we see with these assumptions is related to the exclusion restriction assumption. While rainfall can have an impact on budgetary transfers via its potential effect on voter turnout, it is possible that rainfall can have a direct effect on budgetary transfers as well. For example, by affecting certain crops or causing flooding, heavy rainfall can push legislators to increase budgetary transfers to affected areas.
+
+## (c) Does Smedley have any tools at her disposal for investigating the plausibility of these assumptions? For example, what kind of data analysis might be helpful? Could she use qualitative methods and “shoe-leather" research to assess the validity of any of the assumptions?
+
+A first-attempt tool could be to evaluate the statistical relationship between voter turnout and budgetary transfers. They could plot the data and use descriptive statistics to evaluate any correlations or trends, or run regressions on observational data for descriptive purposes only. Similarly, Smedley could plot the correlation between $Z_{i}$ and $X_{i}$ to ensure they are reasonably correlated. Further they could theoretically and qualitatively explore the validity of the model itself and explore the possibility of heterogenous partial effects since voter turnout can be affected by variables other than rainfall. Then, Smedley could perform a model specification test with an additional instrument. They would calculate the variance of the coefficients $\hat B_{1}$ and $\hat B_{2}$ to see if they coefficients are equal. 
+
+## (ii) Second, Smedley knows that campaign consultants have some tools at their disposal—such as in-person get-out-the-vote contacting—that influence turnout. She therefore proposes a randomized controlled experiment, in which some municipalities will be selected at random for get-out-the-vote efforts and subsequent budgetary transfers to municipalities will be studied. 
+
+## (a) In this study, what is “intent-to-treat" analysis? What is instrumental-variables analysis? What is the instrument, and what is the endogenous regressor? 
+
+## (a) 
+The intent-to-treat analysis is any analysis performed according to how subjects were intended to get treatment. In this case, the analysis would separate those municipalities that were selected to receive get-out-to-vote efforts (the treatment group) and those that were not (the control group) to compare subsequent budgetary transfers post-election (the dependent variable). 
+The instrumental-variables analysis would employ an instrument that is reasonably correlated with voter-turnout (the endogenous independent variable or regressor) and calculate its effect on budgetary transfers. The instrument would be whether the municipality was selected to receive get-out-to-vote efforts, which should be correlated with actual voter turnout.
+
+
+## (b) Make a list of the assumptions needed for IV analysis, and interpret them (say what they mean) for this study. Do you have any potential concerns about any of these assumptions? Which ones, and why? 
+
+\begin{enumerate}
+  \item $Y_{i}=\alpha+\beta X_{i}+\epsilon_{i}$. We assume the model itself. We also assume that there is endogeneity in the model, i.e.: that $X_{i}$ and $/epsilon_{i}$ are not independent. For this example, we assume that the outcome of budgetary transfers is a function of voter turnout plus some random variable, or the error term.  
+  \item Independence of $Z_{i}$ and $\epsilon_{i}$. This means that $Z_{i}$ is exogenous to the model and is not correlated with the error term or the random component of the data generation process. For this example, the error term and the instrument of get-out-to-vote efforts are independent. A concern related to this assumption may be that municipalities with more or less past budgetary transfers may be purposefully selected for get-out-to-vote efforts. While, randomization of the treatment and control municipalities would in theory balance out covariates and potential omitted variables, it is possible that some municipalities who were selected for treatment do not actually end up receiving treatment (i.e. never takers or defiers). 
+
+Q: is the reverse possible in this case?? i.e. that municipalities that were selected to not receive treatment actually do??? I cannot think of why that could be. 
+  
+  \item Exclusion restriction. This means that the exogenous variable (instrument) only affects the outcome $Y_{i}$ through its effect on the endogenous variable $X_{i}$. In this case we assume that get-out-to-vote efforts only affect budgetary transfers through their effect on voter turnout. It may be the case that get-out-to-vote efforts are not well designed such that they do not only affect turnout but also affect budgetary transfers. Perhaps legislators who saw an increase in voter turnout in the areas they represent may feel more pressured by their constituents to allocate resources to their communities. 
+\end{enumerate}
+
+## (c) What are the potential costs and benefits of this second research design, relative to the first?
+
+One potential benefit of this research design is that through randomization, concerns about omitted variables related to the possible effects of rainfall on both voter turnout and budgetary transfers may be reduced. Another potential benefit could be that get-out-to-vote efforts may be more correlated to voter turnout than rainfall in a way that also reduces the possibility of heterogenous partial effects. 
+
+However, this second design may produce compliance issues as highlighted above. Additionally, is Further, an RCT may be more expensive to implement than retrieving rainfall data.
+
+Lastly, both designs present concerns that may invalidate the exclusion restricton. And while this assumption is difficult to test, it is theoretically possible in both cases that the instrument affects the outcome of interest beyond its direct impact on the exogenous regressor.   
+
 # Problem 4
+
+##(a) Suppose this researcher compares voting rates in two national elections that took place
+in 2002 and 2010 and finds that turnout declined. Can the decline be readily attributed
+to the effects of the new law? Why or why not?
+
+The decline cannot be readily attributed to the effects of the new law for several reasons. First, it is important to contextualize the decline in voter turnout between the 2002 and 2010 elections to explore all the reasons why turnout could have declined. Did a considerable number of people migrate out of Peru? Did the composition of candidate tickets deter people from voting? Theoretically there are countless explanations why turnout could have declined that make it difficult, at first glance, to isolate the effect of the law on voter turnout.
 
 # Problem 5
 
