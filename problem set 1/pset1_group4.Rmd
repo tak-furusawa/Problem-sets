@@ -407,6 +407,20 @@ Thus, the minimum possible absolute value of the standardized effect for the bin
 
 How does $\tau^j_{stand}$ vary with respect to p? For this, we would want to take the derivative of the expression for $\tau^j_{stand}$ with respect to p and evaluate the sign of the derivative. 
 
-$\tau^j_{stand}$ varies positively with respect to the proportion of units in the control when p<0.5. In other words the derivative with respect to p is a positive function when the proportion of units is less than half. In this case, as p increases, so does $\tau^j_{stand}$. The opposite is true for when p is greater than 0.5 - the derivative is negative. 
+$\tau^j_{stand}$ varies positively with respect to the proportion of units in the control when p>0.5. In other words the derivative with respect to p is a positive function when the proportion of units is greater than half. In this case, as p increases, so does $\tau^j_{stand}$. The opposite is true for when p is less than 0.5 - the derivative is negative. In order to see this, we can consider: 
 
-This seems to be a strange feature. As greater than half of the proportion of the study group is assigned to control, the standardized effect for the binary variable decreases. When less than half is assigned to control, the standardized effect increases. 
+$$\begin{aligned}
+& \tau^j_{stand} = \frac{\tau^j_{unstand}}{\sqrt{p(1-p)}} \\
+& \text{replace variables for simplicity} \\
+& y = \frac{x}{\sqrt{p(1-p)}} \\
+& y = x \times [p(1-p)]^{\frac{-1}{2}} \\
+&\frac{\partial y}{\partial p} = - x \times [\frac{1}{2}[p(1-p)]^{\frac{-3}{2}}\times [(1-p) - p]]\\
+& =  -\frac{1}{2} x [[p(1-p)]^{\frac{-3}{2}}\times (1-2p)]\\
+& =  -\frac{1}{2} x [p(1-p)]^{\frac{-3}{2}} + xp[p(1-p)]^{\frac{-3}{2}} \\ 
+& \text{replace with alpha for simplicity since we know it's positive} \\
+& = -\frac{1}{2}x\alpha + xp \alpha \\
+& = x \alpha (p- \frac{1}{2}) \\
+& \text{This expression is negative when p is less than 0.5, and positive when p is greater than 0.5}
+\end{aligned}$$
+
+This seems to be a strange feature. As greater than half of the proportion of the study group is assigned to control, the standardized effect for the binary variable increases as p increases. When less than half is assigned to control, the standardized effect decreases as p increases. 
