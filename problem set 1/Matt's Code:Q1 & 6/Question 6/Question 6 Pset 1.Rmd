@@ -88,7 +88,7 @@ As we can see from the ten ITTs above, every single one is positive--indicating 
 Yes, conceptually each of the ten variables for Global Islamic Practice index make sense for gauging level of commitment/practice to Islam. Perhaps the main variable that might be questionable is including whether or not the person "can read the Qu'ran". The reason this one might not make sense is because we know that almost 50% of the Pakistani population is illiterate, meaning that pratically half of the sample would automatically fail this indicator, even if they are otherwise a committed/engaged Muslim. 
 
 # D)
-Yes, assuming that success in the Hajj lottery only affects outcomes of inducing individuals to undertake the Hajj is critical in order to claim unbiased esimates of $\beta^k$. If winning the Haj lottery caused non-compliance (such as a lottery winner NOT attending the Hajj) then we could no longer assume unbiased estimates. 
+While the exclusion restriction is critical to IV analysis strategy, we learned in Lecture 4 that the IVLS estimator is biased but consistent given the model. Though it is biased, it can be more or less biased based upon how large the sample size is. Therefore, we cannot assume that that this is an unbiased estimate of $\beta^k$.
 
 # E)
 
