@@ -1,0 +1,68 @@
+---
+title: "Question 1, PSet 1"
+author: "Matt Easton"
+date: "2/15/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1, Problem Set 1
+
+# A) estimate the ACE using ITT Analysis
+```{r}
+# ITT Analysis looks at the causal effect based solely on treatment assignment.
+
+#First, we calculate the mean for the control.
+mean_control <- ((0*500) + (1*300))/800
+
+#Next, we calculate the mean for the treatment. 
+mean_treatment <- ((0*80) + (1*70))/150
+
+#Then we simply subtract mean_control from mean_treatment (refer to Lecture 3 Slide 22)
+itt <- (mean_treatment - mean_control)
+print(itt)
+
+# The ACE using ITT is 0.09167. 
+```
+The ACE using ITT is 0.09167.
+
+# B) Within treatment, how many are compliers?
+Within the treatment, only 50 people are considered compliers. We know this because they were both assigned treatment AND received treatment. The other 100 people within the treatment group were assigned treatment but did not receive treatment, indicating that they did not comply. 
+
+We are able to make this calculation because we are given both whether they were assigned treatment and whether they received treatment (compliance). Without both of these parts, we would be unable to make this calculation.
+
+# C) Within control, how many are compliers?
+Within the control, all 800 people are compliers. We know this because all 800 people in the control were NOT assigned treatment and did NOT receive treatment. A non-complier would have not been assigned the treatment but still received it anyways; since there is no indication that this occured, we can confidently assume all 800 people in the control are compliers.
+
+There is a possibility that some of the people in the control group are defectors--that is, they responded as though they received the treatment even though they didn't--but since we have no information on them in this problem's info, we do not include this possibility in our calculations.
+
+# D) Estimate the Proportion of Compliers
+```{r}
+# The proportion of compliers is the proportion of subjects assigned treatment that receive treatment MINUS the proportion of subjets assigned control that instead receive treatment (refer to Lecture 3 slides 26-28)
+
+#First, we find the proportion of assigned treatment who receive treatment 
+xt <- (50/150)
+
+#Next, we find the proportion of assigned control who receive treatment
+xc <- (0/800)
+
+#Then, we simply subtract xc from xt
+prop_compliers <- xt - xc
+print(prop_compliers)
+
+#The proportion of compliers is 0.3333 or 33.33%
+```
+The proportion of compliers is 0.3333 or 33.33%
+
+# E) Estimate the Complier Average Causal Effect
+``` {r}
+#The CACE is simply the ITT ACE divided by the Proportion of Compliers (refer to Lecture 3 slide 28)
+cace <- itt/prop_compliers
+print(cace)
+
+#The CACE is 0.275.
+```
+The CACE is 0.275.

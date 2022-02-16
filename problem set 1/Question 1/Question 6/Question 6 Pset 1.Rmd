@@ -1,0 +1,94 @@
+---
+title: "Question 6, PSet 1"
+author: "Matt Easton"
+date: "2/15/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 6, PSet 1
+
+# A) 
+There is evidence of the "truncation of the extremes of socioeconomic distribution" evident in Table II, particularly when comparing the Pakistani average to the sample average of literacy and college education. The Pakistani population has an illteracy rate of 0.482, but the sample's illiteracy rate is approximately 8 percentage points lower at 0.402. This is consistent with the quoted claim above because those who are lowest in socioeconomic status are too poor to attend Hajj, and this same group also has the highest levels of illiteracy. Thus, they are underrepresented in the sample.
+
+This same logic can explain the discrepencies in college education; the Pakistani population average is 0.21, whereas the sample is smaller at only 0.178. Those higher socioeconomic status are more likely to be college educated AND are more likely to attend Hajj through private trip planning instead of through the governmental lottery program. Thus, we can expect the sample to have a lower overall education level than the general Pakistani public.
+
+# B) Estimate the ITT for Global Islamic Practice Index
+
+``` {r}
+#Bring in the data (downloaded .dta file from bcourses)
+#install.packages("haven")
+library(haven)
+hajj_public <- read_dta("Downloads/hajj_public.dta")
+hajj <- hajj_public
+
+#Create an itt function
+itt <- function(outcome, treatment){
+  
+# restrict to non-missing observations
+  treatment <- treatment[!is.na(outcome)]
+  outcome <- outcome[!is.na(outcome)]
+
+# calculate itterence in means
+  mean_control <- mean(outcome[treatment==0])
+  mean_treated <- mean(outcome[treatment==1])
+  itt <- mean_treated - mean_control
+  
+# prep output
+  return(c(`ITT`= itt))
+}
+
+# ITT for Variable 1 x_s14aq1
+itt(hajj$x_s14aq1, hajj$success)
+#ITT is 0.1054
+
+# ITT for Variable 2 x_s14aq3
+itt(hajj$x_s14aq3, hajj$success)
+#ITT is 0.0764
+
+# ITT for Variable 3 x_s14aq4
+itt(hajj$x_s14aq4, hajj$success)
+#ITT is 0.0314
+
+# ITT for Variable 4 x_s14aq5
+itt(hajj$x_s14aq5, hajj$success)
+#ITT is 0.06703
+
+# ITT for Variable 5 x_s14aq6
+itt(hajj$x_s14aq6, hajj$success)
+#ITT is 0.1619
+
+# ITT for Variable 6 x_s14bq2
+itt(hajj$x_s14bq2, hajj$success)
+#ITT is 0.0143
+
+# ITT for Variable 7 x_s14aq8
+itt(hajj$x_s14aq8, hajj$success)
+#ITT is 0.01854
+
+# ITT for Variable 8 x_s14aq9
+itt(hajj$x_s14aq9, hajj$success)
+#ITT is 0.04115
+
+# ITT for Variable 9 x_s14aq12
+itt(hajj$x_s14aq12, hajj$success)
+#ITT is 0.02046
+
+# ITT for Variable 10 x_s14aq13
+itt(hajj$x_s14aq13, hajj$success)
+#ITT is 0.03254
+
+```
+As we can see from the ten ITTs above, every single one is positive--indicating that winning the Hajj lottery had at least some kind of positive increase on the Global Islamic Practice among those who won the lottery.
+
+# C) Do all of the variables in the Global Islamic Practice index belong there?
+Yes, conceptually each of the ten variables for Global Islamic Practice index make sense for gauging level of commitment/practice to Islam. Perhaps the main variable that might be questionable is including whether or not the person "can read the Qu'ran". The reason this one might not make sense is because we know that almost 50% of the Pakistani population is illiterate, meaning that pratically half of the sample would automatically fail this indicator, even if they are otherwise a committed/engaged Muslim. 
+
+# D)
+Yes, assuming that success in the Hajj lottery only affects outcomes of inducing individuals to undertake the Hajj is critical in order to claim unbiased esimates of $\beta^k$. If winning the Haj lottery caused non-compliance (such as a lottery winner NOT attending the Hajj) then we could no longer assume unbiased estimates. 
+
+# E)
+
