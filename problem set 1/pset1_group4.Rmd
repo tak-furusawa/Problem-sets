@@ -1,5 +1,5 @@
 ---
-title: "problem set 1 - group 4"
+title: "Problem Set 1 - Group 4"
 output: pdf_document
 ---
 
@@ -8,15 +8,419 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Problem 1
+A) estimate the ACE using ITT Analysis
+```{r}
+# ITT Analysis looks at the causal effect based solely on treatment assignment.
+
+#First, we calculate the mean for the control.
+mean_control <- ((0*500) + (1*300))/800
+
+#Next, we calculate the mean for the treatment. 
+mean_treatment <- ((0*80) + (1*70))/150
+
+#Then we simply subtract mean_control from mean_treatment (refer to Lecture 3 Slide 22)
+itt <- (mean_treatment - mean_control)
+print(itt)
+
+# The ACE using ITT is 0.09167. 
+```
+The ACE using ITT is 0.09167.
+
+# B) Within treatment, how many are compliers?
+Within the treatment, only 50 people are considered compliers. We know this because they were both assigned treatment AND received treatment. The other 100 people within the treatment group were assigned treatment but did not receive treatment, indicating that they did not comply. 
+
+We are able to make this calculation because we are given both whether they were assigned treatment and whether they received treatment (compliance). Without both of these parts, we would be unable to make this calculation.
+
+# C) Within control, how many are compliers?
+Within the control, it is not possible to know exactly how many people are compliers because of the possibility of never-takers. However, we can ESTIMATE the number of compliers and non-compliers by using the same proportions from the treatment group because of randomization. 
+
+We know that the proportion of compliers in the treatment group is approximately 33.3%. Therefore, we can use this proportion to estimate that the control group also has 33.3% compliance, or 800 (total number in control) * 0.3333 = 267. Therefore, our estimation is that, when considering never-takers, there should be about 267 compliers in the control. 
+
+# D) Estimate the Proportion of Compliers
+```{r}
+# The proportion of compliers is the proportion of subjects assigned treatment that receive treatment MINUS the proportion of subjets assigned control that instead receive treatment (refer to Lecture 3 slides 26-28)
+
+#First, we find the proportion of assigned treatment who receive treatment 
+xt <- (50/150)
+
+#Next, we find the proportion of assigned control who receive treatment
+xc <- (0/800)
+
+#Then, we simply subtract xc from xt
+prop_compliers <- xt - xc
+print(prop_compliers)
+
+#The proportion of compliers is 0.3333 or 33.33%
+```
+The proportion of compliers is 0.3333 or 33.33%
+
+# E) Estimate the Complier Average Causal Effect
+``` {r}
+#The CACE is simply the ITT ACE divided by the Proportion of Compliers (refer to Lecture 3 slide 28)
+cace <- itt/prop_compliers
+print(cace)
+
+#The CACE is 0.275.
+```
+The CACE is 0.275.
+
 
 # Problem 2
+Iyer (2010) is interested in the effect of direct rule by the British during the colonial period on public goods provision in India, compared to indirect rule through native or "princely" states. Lord Dalhousie, Governor-General of India from 1848 to 1856, announced that: 
+
+\textit{On all occasions where heirs natural shall fail, the territory should be made to lapse and adoption should not be permitted, excepting in those cases in which some strong political reason may render it expedient to depart from this general rule.}
+
+In other words, districts in which a native ruler lacking an heir died during the period of Dalhousie’s rule should be annexed by the British, according to this “Doctrine of Lapse” policy. Iyer argues that the death of an heirless ruler in the period of Dalhousie’s rule can be used as an instrumental variable for direct colonial rule.
+
+(a) What two groups of units would you compare when doing an intent-to-treat analysis here? Numerically, how is intent-to-treat analysis related to instrumental-variables analysis?
+
+For an intent to treat analysis, we would use the variable that is purportedly "as good as random" for the treatment assignment variable, in this case the death of an heirless ruler in the period of Dalhousie's rule. The outcome variable is public goods provision. We would compare the (public good provisions of) the group of units where there was a death of a native ruler without an heir, to the group of units where there was not a death of native ruler or where there was the death of one, but there was an heir.
+
+Here, the instrumental-variables analysis is equivalent to the CACE (in the bivariate, binary treatment case). Numerically, the intent-to-treat analysis is the numerator of this.
+
+(b) Define Compliers, Always-Treats, Never-Treats, and Defiers in this context.
+
+Compliers: Those units where the native ruler died without an heir, and British direct rule was taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was not imposed - it remained a princely state.
+
+Always-Treats: Those units where the native ruler died without an heir, and British direct rule was taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was taken up.
+
+Never-Treats: Those units where the native ruler died without an heir, and British direct rule was not taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was not imposed - it remained a princely state.
+
+Defiers: Those units where the native ruler died without an heir, and British direct rule was not taken up. Those units where the native ruler died with an heir (or where there was no death of the ruler), and British direct rule was imposed.
+
+(c) List the assumptions that are required to estimate a Complier average causal effect.
+In this context, which of those assumptions seem plausible (if any), and which seem
+suspect (if any)? Could you use any empirical methods to evaluate their plausibility?
+
+There are 5 assumptions required to estimate a Complier average causal effect.
+
+1. SUTVA (non-interference) 
+2. random assignment to treatment and control 
+3. potential outcomes are fixed attributes of each unit
+4. exclusion restriction 
+5. no defier types 
+6. there are compliers, always takers, and never takers
+
+SUTVA seems plausible. It is unlikely that the death of a ruler (without an heir) would affect the treatment status or outcome of a neighboring district. We could test this by a placebo test wherein we examine whether the death of an heirless ruler in a district affects the outcome of a neighboring district. 
+
+Random assignment of death of a ruler (without an heir) seems plausibly as-if random. Death seems like it strikes exogenously (aka not according to a clear pattern differentiated by districts). We could test this empirically with a balance test and an F statistic on pre-treatment covariates.
+
+Potential outcomes seem to be a good way to think about this problem, and it is feasible to think about them as fixed attributes of a unit, as in the Neyman model. We can't test this. 
+
+Exclusion restriction seems broadly plausible. Yet, we could think of ways in which it could be challenged. For example, if princely states where there are no heirs (and the ruler dies) are those places in which mortality levels were higher (and thus the heirs died) because of bad development conditions, and that this could have long-term effects on the public goods outcomes of the district. We can't test this assumption, but have to reason it theoretically and substantively.
+
+No defier types seems a reasonable assumption. This would mean that in places where the ruler died without an heir, the British didn't take over; and where there was no death or where there was an heir, the British did take over. We can't test this assumption. 
+
+It seems plausible to have compliers, always takers, and never takers. We can't test this assumption however. 
+
+(d) In some of her analyses, Iyer compares districts in which heirless rulers died during Dalhousie’s rule to the remaining districts. Propose a design modification that could
+increase the plausibility of the assumptions you described in (c) and say how it does so.
+
+A design modification could be to compare only the districts in which the ruler died (group 1: with heir; group 2: without heir), and exclude the districts where no death occurred. This might be sensible because districts where rulers are dying might be substantively different from those where they're not, in important ways that affect outcomes (like in mortality rates). As stated above, this could have challenges for the feasibility of the exclusion restriction. Thus, restricting the comparison only to districts with similar levels of deaths of rulers would increase our belief in this assumption.
 
 # Problem 3
 
+## (a) Make a list of the assumptions needed for IV analysis, and interpret them (say what they mean) for this study.
+
+\begin{enumerate}
+  \item $Y_{i}=\alpha+\beta X_{i}+\epsilon_{i}$. We assume the model itself. We also assume that there is an endogeneity problem in the model, i.e.: that $X_{i}$ and $\epsilon_{i}$ are not independent. For this example, we assume that the outcome of budgetary transfers is a function of voter turnout plus some random variable, or the error term. 
+  \item Independence of $Z_{i}$ and $\epsilon_{i}$. This means that $Z_{i}$ is exogenous to the model and is not correlated with the error term or the random component of the data generation process. For this example, the error term and the instrument of rainfall are independent. 
+  \item Exclusion restriction. This means that the exogenous variable (instrument) only affects the outcome $Y_{i}$ through its effect on the endogenous variable $X_{i}$. For this example, rainfall only affects budgetary transfers through its effect on voter turnout. 
+\end{enumerate}
+
+## (b) Do you have any potential concerns about any of the assumptions you listed in part i? Which ones, and why?
+
+The main concern we see with these assumptions is related to the exclusion restriction assumption. While rainfall can have an impact on budgetary transfers via its potential effect on voter turnout, it is possible that rainfall can have a direct effect on budgetary transfers as well. For example, by affecting certain crops or causing flooding, heavy rainfall can push legislators to increase budgetary transfers to affected areas. 
+
+Further, if there are any reasons why other potential omitted variables could affect..    
+
+## (c)
+
+A first-attempt tool could be to evaluate the statistical relationship between voter turnout and budgetary transfers. They could plot the data and use descriptive statistics to evaluate any correlations or trends, or run regressions on observational data for descriptive purposes only. Similarly, Smedley could plot the correlation between $Z_{i}$ and $X_{i}$ to ensure they are reasonably correlated. Further they could theoretically and qualitatively explore the validity of the model itself and explore the possibility of heterogenous partial effects since voter turnout can be affected by variables other than rainfall. Then, Smedley could perform a model specification test with an additional instrument. They would calculate the variance of the coefficients $\hat B_{1}$ and $\hat B_{2}$ to see if they are equal. 
+
+## (ii) 
+
+## (a) 
+The intent-to-treat analysis is any analysis performed according to how subjects were intended to get treatment. In this case, the analysis would separate those municipalities that were selected to receive get-out-the-vote efforts (the treatment group) and those that were not (the control group) to compare subsequent budgetary transfers post-election (the dependent variable). 
+
+The instrumental-variables analysis would employ an instrument that is reasonably correlated with voter-turnout (the endogenous independent variable or regressor) and calculate its effect on budgetary transfers. The instrument would be whether the municipality was selected to receive get-out-the-vote efforts, which should be correlated with actual voter turnout.
+
+
+## (b) Make a list of the assumptions needed for IV analysis, and interpret them (say what they mean) for this study. Do you have any potential concerns about any of these assumptions? Which ones, and why? 
+
+\begin{enumerate}
+  \item $Y_{i}=\alpha+\beta X_{i}+\epsilon_{i}$. We assume the model itself. We also assume that there is endogeneity in the model, i.e.: that $X_{i}$ and $\epsilon_{i}$ are not independent. For this example, we assume that the outcome of budgetary transfers is a function of voter turnout plus some random variable, or the error term.  
+  \item Independence of $Z_{i}$ and $\epsilon_{i}$. This means that $Z_{i}$ is exogenous to the model and is not correlated with the error term or the random component of the data generation process. For this example, the error term and the instrument of get-out-the-vote efforts are independent. A concern related to this assumption may be that municipalities with more or less past budgetary transfers may be purposefully selected for get-out-the-vote efforts. Randomization of the treatment and control municipalities would in theory balances out covariates and potential omitted variables. 
+  
+  \item Exclusion restriction. This means that the exogenous variable (instrument) only affects the outcome $Y_{i}$ through its effect on the endogenous variable $X_{i}$. In this case we assume that get-out-the-vote efforts only affect budgetary transfers through their effect on voter turnout. It may be the case that get-out-the-vote efforts are not well designed such that they do not only affect turnout but also affect budgetary transfers. Perhaps legislators who saw an increase in voter turnout in the areas they represent may feel more pressured by their constituents to allocate resources to their communities. 
+\end{enumerate}
+
+## (c) What are the potential costs and benefits of this second research design, relative to the first?
+
+One potential benefit of this research design is that through randomization, concerns about omitted variables related to the possible effects of rainfall on both voter turnout and budgetary transfers may be reduced. Another potential benefit could be that get-out-the-vote efforts may be better correlated to voter turnout than rainfall in a way that also reduces the possibility of heterogenous partial effects. 
+
+However, this second design may produce compliance issues. Randomization is not enough by itself to estimate the actual treatment effect. Additionally, an RCT may be more expensive to implement than retrieving rainfall data. Further, there may be ethical concerns with contacting real voters prior to real elections. 
+
+Lastly, both designs present concerns that may invalidate the exclusion restriction. And while this assumption is difficult to test, it is theoretically possible in both cases that the instrument affects the outcome of interest beyond its direct impact on the exogenous regressor.
+
+
 # Problem 4
 
+When the exogeneity is violated, we assume that there is a confounder behind Z and Y or Y directly affects X.
+Since t-test just shows Z and X are correlated, high t-value doesn't guarantee the exogeneity.
+
+Further, did a considerable number of people migrate out of Peru? Did the composition of candidate tickets deter people from voting? Theoretically there are countless explanations why turnout could have declined that make it difficult, at first glance, to isolate the effect of the law on voter turnout.
+
+
 # Problem 5
+(a) The decline cannot readily be attributed to the effects of the new law. There are likely other events that happened during the time period that may affect the outcome of voting. Further, the law is not implemented as-if randomly across districts - it is implemented according to the level of poverty in an area. There could be important confounding variables with the level of poverty and voting. 
+
+(b) Intention to treat analysis. 
+
+```{r}
+# There are 2000 units assigned to control, 75 percent have a value of 1 
+# There are 2000 units assigned to treatment, 75.25 % have a value of 1
+
+treatment <- c(rep(0,2000), rep(1, 2000))
+
+overall_outcome <- c(rep(1,1500), rep(0, 500), rep(1, 1505), rep(0, 495))
+
+receipt <- c(rep(0,2000), rep(1,500), rep(0,1500))
+
+data <- cbind(treatment, overall_outcome, receipt)
+
+ITT <- function(treatment, outcome){
+  
+  mean_control <- mean(outcome[treatment == 0])
+  mean_treatment <- mean(outcome[treatment == 1])
+  itt <- mean_treatment - mean_control
+  
+  #standard error
+  treated <- outcome[treatment == 1]
+  var1 <- sum((treated - mean(treated))^2) / (length(treated) - 1)
+  
+  not_treated <- outcome[treatment == 0]
+  var0 <- sum((not_treated - mean(not_treated))^2) / (length(not_treated) - 1)
+  
+  #se_itt
+  se_itt <- sqrt((var1/length(treated)) + var0/length(not_treated))
+  
+  # t stat
+  t_stat <- itt / se_itt
+  
+  df <- (var1/length(treated) + var0/length(not_treated))^2 /
+((var1/length(treated))^2 / (length(treated) - 1) +
+(var0/length(not_treated))^2 / (length(not_treated) - 1))
+  
+  # p value
+  p_value <- pt(-abs(t_stat), df = df, ncp = 0, lower.tail = TRUE) + 
+    pt(abs(t_stat), df = df, ncp = 0, lower.tail = FALSE)
+  
+  return(c("ITT" = itt, "SE ITT" = se_itt, "p-value" = p_value))
+}
+
+itt <- ITT(treatment, overall_outcome)
+
+print(itt)
+```
+We find that the intention to treatment analysis gives an estimate of -0.0025, and that the effect is not statistically different from 0. In other words, the effect of being assigned to the treatment is not statistically significant.
+
+(c) Treatment receipt is "learning about the lower level of the fine." Thus, there is non-compliance in the experiment, shown in Table 1, where we see that there are people who are assigned to treatment, but did not receive the treatment (did not learn of the fine). The always-treats are those who are assigned to treatment and receive the treatment, and when assigned to control would still receive the treatment; we assume here that there aren't any, since we see only one-sided non compliance and since we would presume balancedness due to randomization since we don't see any noncompliance in the control group (thus no always takers) we assume there are none in the treatment. The never treats are those who when assigned to treatment receive the control, and when assigned to control receive the control; in this study these are the people assigned to treatment who did not receive the treatment (assuming no defiers). Finally, the compliers are those who when assigned to treatment receive the treatment, and when assigned to control receive the control; in this study, those in the treatment group who received the treatment could either be always-treats or compliers, and those in the control who received the control could be never-treats or compliers.
+
+(d) Conduct IV analysis to estimate the complier average causal effect. Also, estimate the turnout (percentage voting) among Compliers in the control group.
+
+```{r}
+## First, we will conduct IV analysis to estimate the complier 
+## average causal effect.
+
+# The treatment assignment instruments for treatment receipt in the 
+# instrumental-variables estimator (wald estimator)
+
+# in this case (with a binary treatment and a binary outcome)
+# we can estimate the CACE as the same as the IV estimator
+# It is Y^t - Y^c / X^t - X^c
+
+# first, we get the numerator, which is the ITT that we already calculated
+
+intention_to_treat <- 0.00250000
+
+# now we need to get the denominator, which is the proportion of compliers
+
+# first we estimate share of never-takers among those assigned to treatment
+share_never_treated <- 1500/2000
+
+# now we need to estimate the number of compliers among assigned to control
+compliers_incontrol <- 2000 - (share_never_treated*2000)
+
+# now we get the estimated share of compliers in the study 
+total_compliers <- compliers_incontrol + 500 
+
+share_compliers <- total_compliers/4000
+
+# now we calculate the CACE estimate
+cace <- intention_to_treat/share_compliers
+
+print(cace)
+
+# now we can estimate the turnout rate among compliers assigned to the control
+# group
+
+# we have already estimated the number of compliers in the control group
+
+compliers_incontrol
+
+# we want the proportion of compliers in control
+share_compliers_control <- compliers_incontrol/2000
+
+# then we want the share of never treats in the treatment * their voting rate
+voting_nevertreat <- share_never_treated*73
+
+# now we can solve the equation for x, which is the estimate of turnout for 
+# the compliers in the control
+turnout_compliers_control <- (75 - voting_nevertreat)/share_compliers_control
+
+
+
+```
+We estimate a CACE of 0.01. We also estimate the turnout among Compliers in the control group as 81%.  
+
+(e) Assumptions necessary for the IV analysis:
+
+1) SUTVA (non-interference)
+2) Random assignment to treatment and control
+3) Potential outcomes are fixed attributes of each unit
+4) Exclusion restriction
+5) No defier types
+
+Random assignment (2) seems plausible, given that the researchers experimentally manipulated the treatment. It seems plausible to assume that potential outcomes are fixed attributes of each unit (3). It seems fair to assume that there are no defier types (5) - after all, it is difficult to think of a unit that would seek out information if given the control, and ignore the information if given the treatment. 
+
+SUTVA (1) might face problems. It is possible that if people live closely together, the fact of someone in the treatment group receiving the treatment of information might lead this person to speak about it to someone assigned to control, thus affecting the outcome of the person in control who was not supposed to receive information. If the researchers can be certain that these units are not in contact, the threat of breaking SUTVA is less likely.
+
+The exclusion restriction (4) can possibly be violated. This would be if assignment to treatment or control affects the outcome through another channel other than through the receipt of treatment (control). This could be the case if receiving information makes people more likely to tell their families to go vote because they will otherwise face a financial penalty, for example.
+
+If either SUTVA or the exclusion restriction (or both) turn out not to be valid assumptions, then our analysis becomes less convincing, since it rests on these assumptions. With that said, it is possible to provide some evidence in support of SUTVA (or lack of interference) if the data is available - data on the outcomes of neighbors could be used here. The exclusion restriction would need to be substantiated with substantive and theoretical reasoning, there are no ready-made statistical tests to test its validity. 
+
 
 # Problem 6
 
+# A) 
+There is evidence of the "truncation of the extremes of socioeconomic distribution" evident in Table II, particularly when comparing the Pakistani average to the sample average of literacy and college education. The Pakistani population has an illteracy rate of 0.482, but the sample's illiteracy rate is approximately 8 percentage points lower at 0.402. This is consistent with the quoted claim above because those who are lowest in socioeconomic status are too poor to attend Hajj, and this same group also has the highest levels of illiteracy. Thus, they are underrepresented in the sample.
 
+This same logic can explain the discrepencies in college education; the Pakistani population average is 0.21, whereas the sample is smaller at only 0.178. Those higher socioeconomic status are more likely to be college educated AND are more likely to attend Hajj through private trip planning instead of through the governmental lottery program. Thus, we can expect the sample to have a lower overall education level than the general Pakistani public.
+
+# B) Estimate the ITT for Global Islamic Practice Index
+
+``` {r}
+#Bring in the data (downloaded .dta file from bcourses)
+#install.packages("haven")
+library(haven)
+hajj_public <- read_dta("hajj_public.dta")
+hajj <- hajj_public
+
+#Create an itt function
+itt <- function(outcome, treatment){
+  
+# restrict to non-missing observations
+  treatment <- treatment[!is.na(outcome)]
+  outcome <- outcome[!is.na(outcome)]
+
+# calculate itterence in means
+  mean_control <- mean(outcome[treatment==0])
+  mean_treated <- mean(outcome[treatment==1])
+  itt <- mean_treated - mean_control
+  
+# prep output
+  return(c(`ITT`= itt))
+}
+
+# ITT for Variable 1 x_s14aq1
+itt(hajj$x_s14aq1, hajj$success)
+#ITT is 0.1054
+
+# ITT for Variable 2 x_s14aq3
+itt(hajj$x_s14aq3, hajj$success)
+#ITT is 0.0764
+
+# ITT for Variable 3 x_s14aq4
+itt(hajj$x_s14aq4, hajj$success)
+#ITT is 0.0314
+
+# ITT for Variable 4 x_s14aq5
+itt(hajj$x_s14aq5, hajj$success)
+#ITT is 0.06703
+
+# ITT for Variable 5 x_s14aq6
+itt(hajj$x_s14aq6, hajj$success)
+#ITT is 0.1619
+
+# ITT for Variable 6 x_s14bq2
+itt(hajj$x_s14bq2, hajj$success)
+#ITT is 0.0143
+
+# ITT for Variable 7 x_s14aq8
+itt(hajj$x_s14aq8, hajj$success)
+#ITT is 0.01854
+
+# ITT for Variable 8 x_s14aq9
+itt(hajj$x_s14aq9, hajj$success)
+#ITT is 0.04115
+
+# ITT for Variable 9 x_s14aq12
+itt(hajj$x_s14aq12, hajj$success)
+#ITT is 0.02046
+
+# ITT for Variable 10 x_s14aq13
+itt(hajj$x_s14aq13, hajj$success)
+#ITT is 0.03254
+
+```
+As we can see from the ten ITTs above, every single one is positive--indicating that winning the Hajj lottery had at least some kind of positive increase on the Global Islamic Practice among those who won the lottery.
+
+# C) Do all of the variables in the Global Islamic Practice index belong there?
+Yes, conceptually each of the ten variables for Global Islamic Practice index make sense for gauging level of commitment/practice to Islam. Perhaps the main variable that might be questionable is including whether or not the person "can read the Qu'ran". The reason this one might not make sense is because we know that almost 50% of the Pakistani population is illiterate, meaning that pratically half of the sample would automatically fail this indicator, even if they are otherwise a committed/engaged Muslim. 
+
+# D)
+While the exclusion restriction is critical to IV analysis strategy, we learned in Lecture 4 that the IVLS estimator is biased but consistent given the model. Though it is biased, it can be more or less biased based upon how large the sample size is. Therefore, we cannot assume that that this is an unbiased estimate of $\beta^k$.
+
+# E)
+We recognize that the standard deviation of potential outcomes under control of j can also be expressed thanks to a Bernoulli Distribution, $\sqrt{p(1-p)}$.
+
+This is on the denominator of the expression for the standardized effect for the binary variable. Thus, it will be minimized when the denominator (above) is maximized. One way to solve this problem, then is to find the value of p for which the standardized effect for the binary variable is minimized - a maximization problem of the expression of p.
+
+$$\begin{aligned}
+& \underset{p}{\text{maximize}}
+& f(p) = \sqrt{p (1-p)} \\
+& \text{subject to} & 0 \geq p \leq 1 \\ \\ \\
+&\frac{\partial f}{\partial p} = \frac{1}{2}(p(1-p))^{\frac{-1}{2}} \times ((1-p) - p) = 0\\
+& = \frac{1}{2}(p(1-p))^{\frac{-1}{2}} (1-p) - \frac{1}{2}p(p(1-p))^{\frac{-1}{2}} \\
+& = \frac{1}{2}p^{\frac{-1}{2}} (1-p)^{\frac{-1}{2}}(1-p) - \frac{1}{2}p \times p^{\frac{-1}{2}}(1-p)^{\frac{-1}{2}} \\
+& = \frac{1}{2}p^{\frac{-1}{2}} (1-p)^{\frac{1}{2}} - \frac{1}{2} \times p^{\frac{1}{2}}(1-p)^{\frac{-1}{2}} \\
+& p^{\frac{1}{2}}(1-p)^{\frac{-1}{2}} = p^{\frac{-1}{2}} (1-p)^{\frac{1}{2}} \\
+& p = 1-p \\
+& 2p = 1 \\
+& p = 1/2 \\
+\end{aligned}$$
+
+So the value of the standardized effect for the binary variable is minimized when p = 0.5, or when the denominator = $(0.5 \times (1-0.5))^{\frac{1}{2}} = 0.5$. 
+
+Thus, the minimum possible absolute value of the standardized effect for the binary variable in terms of the unstandardized variable is equal to $\tau^j_{stand} = \frac{\tau^j_{unstand}}{0.5}$.
+
+How does $\tau^j_{stand}$ vary with respect to p? For this, we would want to take the derivative of the expression for $\tau^j_{stand}$ with respect to p and evaluate the sign of the derivative. 
+
+$\tau^j_{stand}$ varies positively with respect to the proportion of units in the control when p>0.5. In other words the derivative with respect to p is a positive function when the proportion of units is greater than half. In this case, as p increases, so does $\tau^j_{stand}$. The opposite is true for when p is less than 0.5 - the derivative is negative. In order to see this, we can consider: 
+
+$$\begin{aligned}
+& \tau^j_{stand} = \frac{\tau^j_{unstand}}{\sqrt{p(1-p)}} \\
+& \text{replace variables for simplicity} \\
+& y = \frac{x}{\sqrt{p(1-p)}} \\
+& y = x \times [p(1-p)]^{\frac{-1}{2}} \\
+&\frac{\partial y}{\partial p} = - x \times [\frac{1}{2}[p(1-p)]^{\frac{-3}{2}}\times [(1-p) - p]]\\
+& =  -\frac{1}{2} x [[p(1-p)]^{\frac{-3}{2}}\times (1-2p)]\\
+& =  -\frac{1}{2} x [p(1-p)]^{\frac{-3}{2}} + xp[p(1-p)]^{\frac{-3}{2}} \\ 
+& \text{replace with alpha for simplicity since we know it's positive} \\
+& = -\frac{1}{2}x\alpha + xp \alpha \\
+& = x \alpha (p- \frac{1}{2}) \\
+& \text{This expression is negative when p is less than 0.5, and positive when p is greater than 0.5}
+\end{aligned}$$
+
+This seems to be a strange feature. As greater than half of the proportion of the study group is assigned to control, the standardized effect for the binary variable increases as p increases. When less than half is assigned to control, the standardized effect decreases as p increases. 
