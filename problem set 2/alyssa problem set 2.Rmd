@@ -1,0 +1,26 @@
+---
+title: "problem set 2"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1 - Chapter 6 (Stats Mods), Exercise set C, 2-4 (p.90)
+
+2. We need to compute the path coefficients in figure 2. 
+
+3. estimate the SD of delta in equation 10 
+
+4. find standard errors for path coefficients and their difference; and also t-ratios and statistical significance. 
+
+not 5 and 6 right? 
+
+## Problem 7
+a. total effect is c which we break down into direct and indirect effects. d is direct effect, ab is the indirect effect. the overarching derivation comes from the book (look at slides for this) 
+b. why would this break down if it varies across subjects? there's a trick. we can re-arrange covariance as the expectation of the product of those things - product of the expectations. solve for e of xy - > ; then there exists at least one pair for which i and j are not the same. we can't compute the covariance. expectation of a and b we can't compute if we don't have the covariance - it breaks down in the indirect effect. aka its a very strong assumption to make to say that the indirect effect is constant. 
+c. look at the mediator equation. if treatment effect is 0 for everyone - a is 0 (for the first eqation.) E[cX] = cE[X]; E[aibi] = aE[bi] = 0 * e[b1] = 0; when we deal with averages, we might have to use expectations. 
+d. why does the complex potential outcome defy empirical investigation? you can never observe it. you can't at the same time set and not set z to 1. 
+e.  y1 given d = 1 - y 0 given d = 1; one of these terms i dont observe.the distinction is that the in this equation 2 things are moving (z 0/1 and other one 0/1) whereas in the other, we fix z and manipulate the mediator.
+
