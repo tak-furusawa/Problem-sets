@@ -9,13 +9,45 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Problem 1 - Chapter 6 (Stats Mods), Exercise set C, 2-4 (p.90)
 
-2. We need to compute the path coefficients in figure 2. 
+2. We need to compute the path coefficients in figure 2. If we look at Freedman p. 84, we see that we can calculate these coefficients using the standard OLS regression coefficient algorithm: $(M'M)^{-1}M'U$, utilizing the fact that the variables of interest are standardized. Particularly, 
+$$M'M = n \begin{bmatrix}
+1& r_{VX} \\
+r_{VX}&1 \\
+\end{bmatrix} = n \begin{bmatrix}
+1& 0.52 \\
+0.52 &1 \\
+\end{bmatrix} $$ and 
 
-3. estimate the SD of delta in equation 10 
+$$ M'U = n \begin{bmatrix}
+r_{VU} \\
+r_{XU} \\
+\end{bmatrix} = n \begin{bmatrix}
+-0.26 \\
+-0.42 \\
+\end{bmatrix}  $$ So
+
+$$ (M'M)^{-1} = \frac{1}{n(1-(0.52)^2)} \begin{bmatrix}
+1& -0.52 \\
+-0.52 &1 \\
+\end{bmatrix} $$ and further 
+
+$$ (M'M)^{-1}M'U = \frac{1}{n(1-(0.52)^2)} \begin{bmatrix}
+1& -0.52 \\
+-0.52 &1 \\
+\end{bmatrix} \times n \begin{bmatrix}
+-0.26 \\
+-0.42 \\
+\end{bmatrix} $$
+
+$$  =  \begin{bmatrix}
+-0.06 \\
+-0.39 \\
+\end{bmatrix}
+ $$
+
+3. We would like to estimate the standard deviation of $\delta$ in equation 10. 
 
 4. find standard errors for path coefficients and their difference; and also t-ratios and statistical significance. 
-
-not 5 and 6 right? 
 
 ## Problem 7
 a. total effect is c which we break down into direct and indirect effects. d is direct effect, ab is the indirect effect. the overarching derivation comes from the book (look at slides for this) 
