@@ -161,9 +161,13 @@ One potential benefit of this research design is that through randomization, con
 
 However, this second design may produce compliance issues. Randomization is not enough by itself to estimate the actual treatment effect. Additionally, an RCT may be more expensive to implement than retrieving rainfall data. Further, there may be ethical concerns with contacting real voters prior to real elections. 
 
+<<<<<<< HEAD
 Lastly, both designs present concerns that may invalidate the exclusion restriction. And while this assumption is difficult to test, it is theoretically possible in both cases that the instrument affects the outcome of interest beyond its direct impact on the exogenous regressor.
 
 
+=======
+Lastly, both designs present concerns that may invalidate the exclusion restriction. And while this assumption is difficult to test, it is theoretically possible in both cases that the instrument affects the outcome of interest beyond its direct impact on the exogenous regressor.   
+>>>>>>> Johanna
 # Problem 4
 
 When the exogeneity is violated, we assume that there is a confounder behind Z and Y or Y directly affects X.
