@@ -71,6 +71,103 @@ So the standard error of the path coefficient for mass tolerance ($\hat{\beta}_1
 
 The t-ratio for the path coefficient for mass tolerance ($\hat{\beta}_1 = -0.06$) is $-0.06/ 0.169 = -0.355$, the t-ratio for the path coefficient for elite tolerance ($\hat{\beta}_2 = -0.39$) is $-0.39/ 0.169 = -2.307$ and the t-ratio for their difference is $-0.06- - 0.39 / 0.2391652 = 1.379$. The only statistically significant result at the 5 percent level is the coefficient for elite tolerance.
 
+## Problem 2
+It doesn't matter whether we stipulate n = 26 or n = 36 because the n drops out of the calculation.
+
+## Problem 3
+Pairwise missing data deletion is when there is missing data within a certain variable, one would delete the row - but if the variables of interest for analysis are not missing, then you can keep the row (even if there are some NAs in the row for other variables). Listwise deletion is when there is a missing value at all in the row, the whole row is deleted. 
+
+No. The non-bolded entries are correlation coefficients. 
+
+## Problem 4
+
+(a) We are able to calculate the three bivariate correlation coefficients in Figure 1.
+```{r}
+
+library(dplyr)
+library(naniar)
+
+data <- read.table("https://www.stat.berkeley.edu/users/census/gibson.txt")
+
+# first we replace the -1 with NA
+data <- data %>%
+  replace_with_na(replace = list(V1 = c(-1),
+                             V2 = c(-1),
+                             V3 = c(-1),
+                             V4 = c(-1),
+                             V5 = c(-1),
+                             V6 = c(-1)))
+
+# first we try to calculate the first bivariation correlation
+# coefficient 
+# between mass tolerance and repression 
+
+masses_repression <- cor(data$V2, data$V6, use = "complete.obs")
+
+print(masses_repression)
+
+# this does give us the number reported in figure 1 
+
+# what about elite tolerance and repression?
+
+elites_repression <- cor(data$V4, data$V6, use = "complete.obs")
+
+print(elites_repression)
+
+# this does give us the number reported in figure 1
+
+# finally, what about mass and elite tolerance? 
+elites_masses <- cor(data$V4, data$V2, use = "complete.obs")
+
+print(elites_masses)
+
+# same, it gives us the number from figure 1
+
+```
+(b) Can we replicate the regression results given at the end of the first document (standardized, weighted regression)? \textbf{No} we are not able to replicate the results given at the end of the first document. We have attempted below. 
+
+First there is a standardization of variables, then they are weighted. But still we do not get the same answers as Freedman. We do this in several ways (first standardize, then weight; weight only; standardize only), but do not replicate the results from the document. The only results we replicate is the unweighted, unstandardized regression.
+```{r}
+
+data <- na.omit(data) # first delete incomplete rows
+
+# first we standardize the variables 
+data <- data %>%
+  mutate(mass_std = scale(V2),
+         elite_std = scale(V4),
+         rep_std = scale(V6))
+
+# then we create weights, which should be square root of n 
+data <- mutate(data, 
+               weight = sqrt(V3 + V5))
+
+# then we weight the data points by multiplying by weights
+
+data <- data %>% 
+  mutate(mass_std_weight = mass_std*weight,
+         elite_std_weight = elite_std*weight,
+         rep_std_weight = rep_std*weight)
+
+lm(rep_std ~ elite_std + mass_std, data=data, weights = weight) # nope
+
+lm(rep_std_weight ~ elite_std_weight + mass_std_weight, data=data) # no
+
+# what if instead we only weight
+data <- data %>% 
+  mutate(mass_weight = V2*weight,
+         elite_weight = V4*weight,
+         rep_weight = V6*weight)
+
+lm(rep_weight ~ elite_weight + mass_weight, data=data) 
+# this does not replicate 
+
+lm(V6 ~ V2 + V4, data=data) 
+# here, we DO replicate the unweighted equation 
+
+
+```
+
+
 ## Problem 7
 a. total effect is c which we break down into direct and indirect effects. d is direct effect, ab is the indirect effect. the overarching derivation comes from the book (look at slides for this) 
 b. why would this break down if it varies across subjects? there's a trick. we can re-arrange covariance as the expectation of the product of those things - product of the expectations. solve for e of xy - > ; then there exists at least one pair for which i and j are not the same. we can't compute the covariance. expectation of a and b we can't compute if we don't have the covariance - it breaks down in the indirect effect. aka its a very strong assumption to make to say that the indirect effect is constant. 
