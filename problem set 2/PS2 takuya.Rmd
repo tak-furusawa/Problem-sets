@@ -1,0 +1,258 @@
+---
+title: "Untitled"
+author: "takuya furusawa"
+date: "2022/2/26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+library(dplyr)
+library(tidyverse)
+library(openxlsx)
+library(tinytex)
+
+
+options(tinytex.verbose = TRUE)
+```
+
+
+
+# 1
+Let's denote mass tolerance scores as the followings:
+repression scores=$Y$,
+mass tolerance scores=$X_1$,
+elite tolerance scores=$X_2$.
+
+## 1-2.the path coeﬃcients
+The coefficient vector is $\hat \beta=(X'X)^{-1}X'y$
+
+Since $(X'X)^{-1}$ is the variance-covariance matrix, it is
+```{r}
+vcm<-matrix(c(1,0.52,0.52,1), nrow=2, ncol=2, byrow=T)
+vcm
+```
+
+$X'y$ is
+```{r}
+XY<-t(matrix(c(-0.26,-0.42), nrow=1, ncol=2, byrow=T) ) 
+XY
+```
+
+Since $\hat \beta=(X'X)^{-1}X'y$,$\hat \beta$ is
+```{r}
+beta<-solve(vcm)%*%XY
+beta
+```
+
+```{r}
+beta_1<-beta[1,]
+beta_2<-beta[2,]
+```
+Thus,
+$$\hat \beta_1=`r beta_1`$$
+$$\hat \beta_2=`r beta_2`$$
+
+
+## 1-3. standard error
+$\delta=y-\beta X=y-(X'X)^{-1}X'y X$
+
+Since the outcome variable is standarized, the standard deviation of $y$ should be one.
+$$var(y)=1$$
+$$var(\beta_1X_1+\beta_2X_2+\delta)=1$$
+From additivity of means,
+$$\beta_1^2var(X_1)+\beta_2^2var(X_2)+var(\delta)+2\beta_1\beta_2cov(X_1,X_2)+2\beta_1cov(X_1,\delta)+2\beta_2cov(X_2,\delta)=1$$
+
+Since the both variables are standarized,$var(X_1)=var(X_2)=1$.
+From the assumption of regression analysis, $cov(X_1,\delta)=cov(X_2,\delta)=0$.
+$$\beta_1^2+\beta_2^2+var(\delta)+2\beta_1\beta_2cov(X_1,X_2)=1$$
+Thus, we can estimate the variance as the following:
+$$\hat {var}(\delta)=1-\hat \beta_1^2-\hat\beta_2^2-2\hat\beta_1\hat\beta_2\hat {cov}(X_1,X_2)$$
+and it is neccessary to take degrees of freedom because of the small sample,
+$$\hat {SD}(\delta)=sqrt(\hat {var}(\delta))*\frac{26}{26-3}$$
+```{r}
+SD_res<-1-beta_1^2-beta_2^2-2*beta_1*beta_2*0.52 %>% sqrt()
+SD_res<-26/23*SD_res
+```
+
+$$\hat {SD}(\delta)=`r SD_res`$$
+
+## 1-1-4. standard errors of the coefficients
+### standard errors
+```{r}
+SE_beta_1<-solve(vcm)[1,1]*SD_res
+SE_beta_2<-solve(vcm)[2,2]*SD_res
+```
+$\hat {SE}(\hat \beta_1)=`r SE_beta_1`$
+$\hat {SE}(\hat \beta_2)=`r SE_beta_2`$
+
+Both coefficients have the same standard errors because the variables corresponding each coefficient are standarized, and then get the same standard deviation.
+
+### t-tests
+```{r}
+t_beta_1<-beta_1/SE_beta_1
+t_beta_2<-beta_2/SE_beta_2
+```
+
+$t_{\beta_1}=`r t_beta_1`$
+$t_{\beta_2}=`r t_beta_2`$
+
+While the effect of $X_2$ is significant, $X_1$ is not.
+
+# 2 what if n=36?
+
+Standard deviation of the error terms is...
+```{r}
+SD_res<-1-beta_1^2-beta_2^2-2*beta_1*beta_2*0.52 %>% sqrt()
+SD_res_<-36/33*SD_res
+```
+$$\hat {SD}(\delta)=`r SD_res_`$$
+Standard errors of the coefficients are...
+```{r}
+SE_beta_1_<-solve(vcm)[1,1]*SD_res_
+SE_beta_2_<-solve(vcm)[2,2]*SD_res_
+```
+$\hat {SE}(\hat \beta_1)=`r SE_beta_1_`$
+$\hat {SE}(\hat \beta_2)=`r SE_beta_2_`$
+
+Increasing to 10 samples does not change the coefficient.
+
+# 3 Bivariates?
+No, these coefficients are multivariate ones.
+The bivariate ones are as following:
+$$\hat\beta_1=\frac{\hat {cov}(X_1,y)}{\hat{var}(X_1)}$$
+$$\hat\beta_2=\frac{\hat {cov}(X_2,y)}{\hat{var}(X_2)}$$
+
+Since $\hat {var}(X_1)=1$, the bivariate coefficients should be same as covariance between $X_1$ and $y$ and one between  $X_2$ and $y$ 
+
+### difference between "pairwise" and "listwise"
+In pairwise deletion, a sample is not deleted even if it lacks a data in either one of explanatory variables.If a sample lacks the data of "mass tolerance", for instance, the sample is included to a regression analysis between "elite tolerance" and "repression", although excluded from the analysis between "mass tolerance" and "repression".
+
+In listwise deletion, a sample is deleted if it lacks a data in either one of explanatory variables.If a sample lacks the data of "mass tolerance", for instance, the sample is excluded not only from the analysis between "mass tolerance" and "repression", but also from one between "elite tolerance" and "repression".
+
+# 4
+
+```{r}
+d<-read.xlsx("Book1.xlsx")
+colnames(d)<-c("scode","mass","nmass","elite","nelite","repression")
+
+d$mass[d$mass==-1.00] <- NA
+d$nmass[d$nmass==-1] <- NA
+d$elite[d$elite==-1.00] <- NA
+d$nelite[d$nelite==-1] <- NA
+```
+
+## (a) See if you can calculate the three bivariate correlation coeffcients (with pairwise missing data deletion) given in Figure 1 in the paper using R;
+
+repression~mass tolerance
+```{r}
+model_a1<-lm(repression~mass,data=d)
+model_a1$coefficients[2]
+```
+
+repression~elite tolerance
+```{r}
+model_a2<-lm(repression~elite,data=d)
+model_a2$coefficients[2]
+```
+
+mass~elite tolerance
+```{r}
+model_a3<-lm(mass~elite,data=d)
+model_a3$coefficients[2]
+```
+
+## (b) See if you can replicate the regression results given at the end of the ﬁrst document (i.e., the standardized, weighted regression) using R.
+
+```{r}
+# standarization
+d$mass_s<-(d$mass-mean(d$mass,na.rm=T))/sd(d$mass,na.rm=T)
+d$elite_s<-(d$elite-mean(d$elite,na.rm=T))/sd(d$elite,na.rm=T)
+d$repress_s<-(d$repression-mean(d$repression,na.rm=T))/sd(d$repression,na.rm=T)
+```
+
+```{r}
+lm(repress_s~mass_s+elite_s,data=d,weights = nmass+nelite)
+```
+
+# 5
+## response schedule
+
+$$
+y_{i,x_1,x_2}=\beta_1 x_1+\beta_2 x_2+\delta_i
+$$
+
+## Assumptions
+The assumptions embedded in this respons schedule are...
+(1)the repression score of i is determined from it.
+(2)the tolerance scores of elites and masses were chosen at random by Nature, independent of the $\delta_i$'s.
+
+Common sense would say
+
+# 6
+## (a) In your view, which of these two statements is closer to the truth?
+The second statement is *closer* to the truth. "Regression analysis assumes causation but can be used to estimate the size of a causal effect—if the assumptions of the regression models are correct."
+
+Regression analysis does *not* necessarily assume causation. Its goal is to estimate outcome variables from explanatory variables.It is sure that, however, regression analysis can estimate the size of a causal effect by adding the assumption.
+
+For example, we may be able to estimate wage of labors based on their years of schooling by regression analysis between them. It is possible even if long schooling is not the cause of high wage, rather the high ability of the labors leads to both variables. In this case, the year of schooling can be considered a measurement of the potential ability.
+
+## (b) Does your answer change, depending on whether one is analyzing experimental or observational data? Explain.
+My answer change does not change.
+
+## (c) Does your answer change if we substitute “Analysis under the Neyman potential outcomes model” for “Regression analysis” in (a)? Explain.
+
+Neither statements fits. Causation is to be tested by analysis under the Neyman potential outcomes model, rather than the assumption of the analysis.
+
+# 7
+## (a)
+As the equation (10.3) suggests, the direct effect of $Z_i$ is $d$.
+Substituting (10.1) to (10.3),
+$$
+Y_i=\alpha_3+(d+ab)Z_i+(\alpha_1+e_{1i})b+e_{3i}.
+$$
+Since the total effect of $Z_i$ is $d+ab$,the indirect effect is
+$$
+d+ab-d=ab.
+$$
+
+## (b)
+From the equation (10.2), the total effect, $c$
+$$
+\begin{aligned}
+E(c_i)&=E(d_i+a_ib_i)\\
+&=E(d_i)+E(a_ib_i)\\
+&=E(d_i)+E(a_i)E(b_i)+Cov(a_i,b_i)
+\end{aligned}
+$$
+If the parameters are same across subjects ($a_1=a_2=...=E(a_i)$and$b_1=b_2=...=E(b_i)$), then$Cov(a_i,b_i)=0$.
+Thus, the total effect is equal to the sum of the direct effect and indirect effect.
+Otherwise, however, $Cov(a_i,b_i)\ne0$.
+
+
+## (c)
+
+$$
+E(a_ib_i)=E(a_i)E(b_i)+Cov(a_i,b_i)
+$$
+From the assumptions, $E(a_i)=0$]
+While $b_i$ varies across $i$, $a_i$ does not vary.
+So, $Cov(a_i,b_i)=0$.
+$$
+E(a_ib_i)=0.
+$$
+
+
+## (d)
+
+$M_i(0)$ refers to the potential outcome of $M_i$ for $Z_i=0$, while the second value of $Y_i(M_i(0),1)$ means this is a potential outcome of $Y_i$
+Since the first value and second value are contradict each other, we cannot observe $Y_i(M_i(0),1)$ in fact.
+
+## (e)
+In the first group of equations using $Y_i(M_i(Z_i),Z_i)$, the potential outcomes of $Y_i$ are defined by the potential outcomes of $M_i$.
+And they shows the indirect effect of $Z_i$.
+
+Unlike the first group, the second groups using $Y_i(m,z)$ show the direct effect of $Z_i$ and they can be estimated if it is possible to manipulate both $Z_i$ and $M_i$.
