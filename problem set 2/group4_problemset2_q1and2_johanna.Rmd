@@ -16,9 +16,7 @@ library(matlib)
 
 ## Exercise 2
 
-The correlation between mass and elite tolerance scores is 0.52; between
-mass tolerance scores and repression scores, −0.26; between elite tolerance
-scores and repression scores,−0.42.
+The correlation between mass and elite tolerance scores is 0.52; between mass tolerance scores and repression scores, −0.26; between elite tolerance scores and repression scores,−0.42.
 
 The equation for which we are computing the coefficients is Repression = $\beta_{1}$Mass tolerance + $\beta_{2}$Elite tolerance + $\delta$.
 
@@ -64,9 +62,12 @@ coef <- (solve(M_prime_M)) %*% M_prime_U
 coef 
 
 ```
+The standardization of the variables allows us to use the methods in lecture 5; namely, we can apply the OLS assumptions and use matrix algebra to compute the coefficients and their variance.
+
 ## Exercise 3
 
 $\hat\sigma^{2}$=residual variance of $\hat\delta$, and using equation 8 in Freedman, p. 85, $\hat \sigma^{2}=1-\hat a^{2} - \hat b^{2} - \hat a \hat b r_{VX}$. Then, we multiple $\sigma^{2}(\frac{n}{n-p})$. Since there are two variables on the right hand side of equation (10):$U=aV+bX+\delta$, and since the sample size is small, p=3.   
+
 ```{r}
 a_hat <- -0.06
 b_hat <- -0.39
@@ -78,7 +79,7 @@ sd
 ```
 ## Exercise 4
 
-The formula for the standard error of the coefficients is $SE_{\hat\beta}=\hat \sigma^{2}[X'X]^{-1}$. 
+The formula for the standard errors of the coefficients is $SE_{\hat\beta}=\hat \sigma^{2}[X'X]^{-1}$. 
 
 ```{r}
 
@@ -86,7 +87,7 @@ var <- as.matrix(sigma2_hat * solve(M_prime_M))
 se <- sqrt(var[1,1])
 se
 
-var_diff <- var[1,1] + var[2,2]
+var_diff <- var[1,1] + var[2,2] - (2*var[1,2]) 
 var_diff
 
 se_diff <- sqrt(var_diff)
@@ -98,14 +99,15 @@ t_a
 t_b <- b_hat/se
 t_b
 
-t_diff <- a_hat-b_hat/se_diff
+t_diff <- (a_hat-b_hat)/se_diff
 t_diff
 
 ```
+Unlike Gibson, none of the t-ratios calculated imply significance for either coefficient OR their difference.
 
 # 2
 
-Given that the regression is standardized, the variance of the coefficients are equal to 1, so they cancel out when we compute each matrix. 
+Given that the regression is standardized, the variance of the coefficients equals 1, so the sample size cancels out when we compute each matrix, as shown below.
 
 $\hat \beta = (M'M)^{-1}M'U$
 
@@ -114,4 +116,4 @@ $M'M = n\begin{pmatrix} \mathbf{E}(V_{i}^2) & \mathbf{E}(V_{i}X_{i})  \\ \mathbf
 $M'M =n\begin{pmatrix} 1 & r_{VX} \\ r_{VX} & 1 \end{pmatrix}$
 
 $\hat \beta = (M'M)^{-1}M'U$ = 
-n$\begin{pmatrix} 1 & r_{VU} \\ r_{XU} \end{pmatrix} * \frac{1}{n\begin{pmatrix} 1 & r_{VX} \\ r_{VX} & 1 \end{pmatrix}}$
+n$\begin{pmatrix} 1 & r_{VU} \\ r_{XU} & 1 \end{pmatrix} * \frac{1}{n\begin{pmatrix} 1 & r_{VX} \\ r_{VX} & 1 \end{pmatrix}}$
