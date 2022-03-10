@@ -8,3 +8,48 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Problem 1
+exercise 1
+exercise 9 - (c) weight on probability of exposure; run lm with weights; weights are the inverse of the exposure probabilities; fit lm(y exposure weights = weights) ; filter for which probability10 > 0 ; calculation of weights - if exposure == 10, prob10, else prob00
+
+y on exposure would give you the prob of spillover
+
+all you need to find for c and (probably b) is these different probability weights based on the exposure 
+
+exercise 11 
+
+## Problem 5
+```{r}
+data <- haven :: read_dta("camp1.dta")
+
+# use the equation for GLM model (generalized linear model)
+#m <- glm(dwin tilda julyecq2 + presinc + adaaca + #I(presinc*julyecq2), data = data, family = binomial(link = "probit"))
+
+```
+b - marginal effects
+get the range of the variable adaaca 
+then get a sequence of values by 1 from bottom to top of range
+
+or just get the values in the data set
+get the unique values of the data set 
+then get the medians of various values - median is the function 
+-one of them has a median of 0 so the interaction term drops out 
+-get the medians, make the data set, then make an interaction variable based on the medians of the two variables (multiply them by each other)
+
+- you could hold all of these things and evaluate the function 
+- he plotted it to look like a graph; then it looks like the graph has a constant slope
+
+- maybe you can do analytically look it up 
+
+c) all the unique values in the data set ; plot for the 4 scenarios;
+
+maybe a dataset for each hypothesis
+do the same for each
+then joint together and graphs
+
+adaaca as a vector of the unique values of adaaca. then repeat it 4 times as a vector. create a variable for each hypothesis. 
+
+do predict for each, filtering for each hypothesis (type = response) because you want it on the scale of the y variable 
+
+plot the two with facet wrap and color each hypothesis differently 
+
+make a variable when not incumbent or when incumbent; incumbency probably matters? but he wasn't sure 
