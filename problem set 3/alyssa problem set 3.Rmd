@@ -18,38 +18,135 @@ all you need to find for c and (probably b) is these different probability weigh
 exercise 11 
 
 ## Problem 5
+a) Run the analysis in R including an intercept in the model.
 ```{r}
+library(stargazer)
+
 data <- haven :: read_dta("camp1.dta")
 
-# use the equation for GLM model (generalized linear model)
-#m <- glm(dwin tilda julyecq2 + presinc + adaaca + #I(presinc*julyecq2), data = data, family = binomial(link = "probit"))
+m <- glm(dwin ~ julyecq2 + presinc + adaaca + I(presinc*julyecq2), family = binomial(link = "probit"), data = data)
+
+m
+```
+
+```{r, results='asis'}
+
+stargazer(m, 
+          type = "latex",
+          title = "Probit model results",
+          header = F,
+          dep.var.labels = c("democratic win"),
+          covariate.labels =c("2nd quarter GNP growth", "incumbent seeking re-election", "state liberalism index"))
 
 ```
-b - marginal effects
-get the range of the variable adaaca 
-then get a sequence of values by 1 from bottom to top of range
 
-or just get the values in the data set
-get the unique values of the data set 
-then get the medians of various values - median is the function 
--one of them has a median of 0 so the interaction term drops out 
--get the medians, make the data set, then make an interaction variable based on the medians of the two variables (multiply them by each other)
+(b) Manipulate state liberalism index holding all other variables at their median values. If we look at the output from the margins package, we see that when we hold other values at their median values, the marginal effect of ADAACA on a Democratic win is 0.00131004. 
 
-- you could hold all of these things and evaluate the function 
-- he plotted it to look like a graph; then it looks like the graph has a constant slope
+```{r}
+library(margins)
 
-- maybe you can do analytically look it up 
+m <- glm(dwin ~ julyecq2 + presinc + adaaca + presinc:julyecq2, 
+         family = binomial(link = "probit"), data = data)
 
-c) all the unique values in the data set ; plot for the 4 scenarios;
+margins(m, at = list(julyecq2 = median(data$julyecq2), 
+                     presinc = median(data$presinc)))
 
-maybe a dataset for each hypothesis
-do the same for each
-then joint together and graphs
+```
 
-adaaca as a vector of the unique values of adaaca. then repeat it 4 times as a vector. create a variable for each hypothesis. 
+(c) Arbitrarily define two levels (low and high) for the variable measuring growth, so that 1.5 is high growth and -1.5 is low growth. 
 
-do predict for each, filtering for each hypothesis (type = response) because you want it on the scale of the y variable 
+```{r}
+# first we need to create a data set, first for h1 
 
-plot the two with facet wrap and color each hypothesis differently 
+adaaca <- unique(data$adaaca)
 
-make a variable when not incumbent or when incumbent; incumbency probably matters? but he wasn't sure 
+julyecq2 <- c(rep(1.5, 50))
+
+presinc <- c(rep(1, 50))
+
+h1 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h1$predicted_prob <- predict(m, h1)
+
+h1$hypothesis <- "h1"
+
+# then for h2
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(1.5, 50))
+
+presinc <- c(rep(0, 50))
+
+h2 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h2$predicted_prob <- predict(m, h2)
+
+h2$hypothesis <- "h2"
+
+# then for h3
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(-1.5, 50))
+
+presinc <- c(rep(1, 50))
+
+h3 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h3$predicted_prob <- predict(m, h3)
+
+h3$hypothesis <- "h3"
+
+# finally for h4
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(-1.5, 50))
+
+presinc <- c(rep(0, 50))
+
+h4 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h4$predicted_prob <- predict(m, h4)
+
+h4$hypothesis <- "h4"
+
+```
+
+```{r}
+## now we can make the plots of the different scenarios
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+colors1 <- c("high growth incumbent" = "blue", "low growth incumbent" = "red") 
+
+ggplot() + 
+  geom_point(data = h1, aes(x = adaaca, y = predicted_prob, color = "high growth incumbent")) +
+  geom_point(data = h3, aes(x = adaaca, y = predicted_prob, color = "low growth incumbent")) +
+  xlab('ADAACA') +
+  ylab('Predicted probability') + 
+  labs(title = "Incumbents", color = "Legend") + 
+  scale_color_manual(values = colors1)
+
+colors2 <- c("high growth non-incumbent" = "blue", "low growth non-incumbent" = "red")
+ggplot() + 
+  geom_point(data = h2, aes(x = adaaca, y = predicted_prob, color = "high growth non-incumbent")) +
+  geom_point(data = h4, aes(x = adaaca, y = predicted_prob, color = "low growth non-incumbent")) +
+  xlab('ADAACA') +
+  ylab('Predicted probability') + 
+  labs(title = "Non-incumbents", color = "Legend") + 
+  scale_color_manual(values = colors2)
+
+```
+It appears that these graphs provide support for the hypotheses put forth by the authors.
+
+H1 - Economic growth in the months prior to the election increases the chances that the Democrat will win. This seems feasible, given that in both graphs, high growth leads to a higher probability of a democratic winning.
+
+H2 - The Democrat has a better chance of winning if he/she is the incumbent President. This seems to be supported by the fact that the predicted probabilities are in general higher (and mostly positive) for incumbents than non-incumbents.
+
+H3 - The more liberal the state, the more likely the Democrat will win. We see this as all lines have positive slopes in both graphs.
+
+H4 - Growth prior to the election only helps the Democrat if he or she is the incumbent. This is not true per se - we see that growth helps in BOTH cases (both incumbent and nonincumbent). However, it seems like the effect of economic growth is STRONGER in incumbent situations, or "matters more" in these situations.
