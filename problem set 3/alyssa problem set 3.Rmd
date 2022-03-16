@@ -7,16 +7,27 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Problem 1
-exercise 1
-exercise 9 - (c) weight on probability of exposure; run lm with weights; weights are the inverse of the exposure probabilities; fit lm(y exposure weights = weights) ; filter for which probability10 > 0 ; calculation of weights - if exposure == 10, prob10, else prob00
+## Problem 1 - Exercise 11
+(a) Estimate $E[Y_{01} - Y_{00}]$ by restricting your attention to weeks 2 and 3. How does this estimate compare to the estimate of $E[Y_{11} - Y_{00}]$ presented in the text, which is also identified using observations from weeks 2 and 3? 
 
-y on exposure would give you the prob of spillover
+This estimate, 1.5, is smaller than the estimate of $E[Y_{11} - Y_{00}]$ presented in the text.
 
-all you need to find for c and (probably b) is these different probability weights based on the exposure 
+```{r}
+((3/0.25)+(17/0.25))/((2/0.25)+(2/0.25)) - (((14/0.5)+(7/0.25))/((4/0.5)+(2/0.25)))
+```
 
-exercise 11 
 
+$$\hat{E}[Y_{01} - Y_{00}] = \frac{\frac{2 + 1}{0.25} + \frac{7 + 10}{0.25}}{\frac{2}{0.25}+ \frac{2}{0.25}} - \frac{\frac{5 + 3 + 3 + 3}{0.50} + \frac{3 + 4}{0.25}}{\frac{4}{0.50}+ \frac{2}{0.25}} = 1.5 $$
+(b) Estimate $E[Y_{11} - Y_{00}]$ without imposing the assumption that treatment effects disappear after two weeks by restricting your attention to week 2. 
+
+It is 5. 
+
+```{r}
+((17/0.25)/(2/0.25)) - ((14/0.5)/(4/0.5))
+
+```
+
+$$ \hat{E[Y_{11} - Y_{00}]} = \frac{\frac{9 + 8}{0.25}}{\frac{2}{0.25}} - \frac{\frac{5 + 3 + 3 + 3}{0.50} }{\frac{4}{0.50}} = 5$$
 ## Problem 5
 a) Run the analysis in R including an intercept in the model.
 ```{r}
