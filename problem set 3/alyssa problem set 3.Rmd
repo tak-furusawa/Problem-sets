@@ -1,0 +1,163 @@
+---
+title: "alyssa problem set 3"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1 - Exercise 11
+(a) Estimate $E[Y_{01} - Y_{00}]$ by restricting your attention to weeks 2 and 3. How does this estimate compare to the estimate of $E[Y_{11} - Y_{00}]$ presented in the text, which is also identified using observations from weeks 2 and 3? 
+
+This estimate, 1.5, is smaller than the estimate of $E[Y_{11} - Y_{00}]$ presented in the text.
+
+```{r}
+((3/0.25)+(17/0.25))/((2/0.25)+(2/0.25)) - (((14/0.5)+(7/0.25))/((4/0.5)+(2/0.25)))
+```
+
+
+$$\hat{E}[Y_{01} - Y_{00}] = \frac{\frac{2 + 1}{0.25} + \frac{7 + 10}{0.25}}{\frac{2}{0.25}+ \frac{2}{0.25}} - \frac{\frac{5 + 3 + 3 + 3}{0.50} + \frac{3 + 4}{0.25}}{\frac{4}{0.50}+ \frac{2}{0.25}} = 1.5 $$
+(b) Estimate $E[Y_{11} - Y_{00}]$ without imposing the assumption that treatment effects disappear after two weeks by restricting your attention to week 2. 
+
+It is 5. 
+
+```{r}
+((17/0.25)/(2/0.25)) - ((14/0.5)/(4/0.5))
+
+```
+
+$$ \hat{E[Y_{11} - Y_{00}]} = \frac{\frac{9 + 8}{0.25}}{\frac{2}{0.25}} - \frac{\frac{5 + 3 + 3 + 3}{0.50} }{\frac{4}{0.50}} = 5$$
+## Problem 5
+a) Run the analysis in R including an intercept in the model.
+```{r}
+library(stargazer)
+
+data <- haven :: read_dta("camp1.dta")
+
+m <- glm(dwin ~ julyecq2 + presinc + adaaca + I(presinc*julyecq2), family = binomial(link = "probit"), data = data)
+
+m
+```
+
+```{r, results='asis'}
+
+stargazer(m, 
+          type = "latex",
+          title = "Probit model results",
+          header = F,
+          dep.var.labels = c("democratic win"),
+          covariate.labels =c("2nd quarter GNP growth", "incumbent seeking re-election", "state liberalism index"))
+
+```
+
+(b) Manipulate state liberalism index holding all other variables at their median values. If we look at the output from the margins package, we see that when we hold other values at their median values, the marginal effect of ADAACA on a Democratic win is 0.00131004. 
+
+```{r}
+library(margins)
+
+m <- glm(dwin ~ julyecq2 + presinc + adaaca + presinc:julyecq2, 
+         family = binomial(link = "probit"), data = data)
+
+margins(m, at = list(julyecq2 = median(data$julyecq2), 
+                     presinc = median(data$presinc)))
+
+```
+
+(c) Arbitrarily define two levels (low and high) for the variable measuring growth, so that 1.5 is high growth and -1.5 is low growth. 
+
+```{r}
+# first we need to create a data set, first for h1 
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(1.5, 50))
+
+presinc <- c(rep(1, 50))
+
+h1 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h1$predicted_prob <- predict(m, h1)
+
+h1$hypothesis <- "h1"
+
+# then for h2
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(1.5, 50))
+
+presinc <- c(rep(0, 50))
+
+h2 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h2$predicted_prob <- predict(m, h2)
+
+h2$hypothesis <- "h2"
+
+# then for h3
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(-1.5, 50))
+
+presinc <- c(rep(1, 50))
+
+h3 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h3$predicted_prob <- predict(m, h3)
+
+h3$hypothesis <- "h3"
+
+# finally for h4
+
+adaaca <- unique(data$adaaca)
+
+julyecq2 <- c(rep(-1.5, 50))
+
+presinc <- c(rep(0, 50))
+
+h4 <- as.data.frame(cbind(adaaca, julyecq2, presinc))
+
+h4$predicted_prob <- predict(m, h4)
+
+h4$hypothesis <- "h4"
+
+```
+
+```{r}
+## now we can make the plots of the different scenarios
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+colors1 <- c("high growth incumbent" = "blue", "low growth incumbent" = "red") 
+
+ggplot() + 
+  geom_point(data = h1, aes(x = adaaca, y = predicted_prob, color = "high growth incumbent")) +
+  geom_point(data = h3, aes(x = adaaca, y = predicted_prob, color = "low growth incumbent")) +
+  xlab('ADAACA') +
+  ylab('Predicted probability') + 
+  labs(title = "Incumbents", color = "Legend") + 
+  scale_color_manual(values = colors1)
+
+colors2 <- c("high growth non-incumbent" = "blue", "low growth non-incumbent" = "red")
+ggplot() + 
+  geom_point(data = h2, aes(x = adaaca, y = predicted_prob, color = "high growth non-incumbent")) +
+  geom_point(data = h4, aes(x = adaaca, y = predicted_prob, color = "low growth non-incumbent")) +
+  xlab('ADAACA') +
+  ylab('Predicted probability') + 
+  labs(title = "Non-incumbents", color = "Legend") + 
+  scale_color_manual(values = colors2)
+
+```
+It appears that these graphs provide support for the hypotheses put forth by the authors.
+
+H1 - Economic growth in the months prior to the election increases the chances that the Democrat will win. This seems feasible, given that in both graphs, high growth leads to a higher probability of a democratic winning.
+
+H2 - The Democrat has a better chance of winning if he/she is the incumbent President. This seems to be supported by the fact that the predicted probabilities are in general higher (and mostly positive) for incumbents than non-incumbents.
+
+H3 - The more liberal the state, the more likely the Democrat will win. We see this as all lines have positive slopes in both graphs.
+
+H4 - Growth prior to the election only helps the Democrat if he or she is the incumbent. This is not true per se - we see that growth helps in BOTH cases (both incumbent and nonincumbent). However, it seems like the effect of economic growth is STRONGER in incumbent situations, or "matters more" in these situations.

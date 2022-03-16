@@ -1,0 +1,45 @@
+---
+title: "ps231b_problemset3_1.1. and 2_johanna"
+author: "Johanna Reyes"
+date: "3/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+---
+title: "PS 231 Problem Set 3 Qs 1.1 and 2"
+author: "Johanna Reyes"
+date: "3/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+---
+title: "PS 231 B Problem Set 3 q 1.1 and 2"
+author: "Johanna Reyes"
+date: "3/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1
+After reading Gerber and Green Chapter 8, complete
+• Exercise 1, (a)-(d) on p. 283. Note that the reference to section 8.4 in (b) should refer to section 8.2 or 8.3.
+
+#2
+Consider an experimental sample of groups with three units each. Half of all units are assigned to treatment at random. Suppose a model where there is spillover within groups but not across groups. Specifically, if any individual in a group receives treatment, the spillover effect is spread equally among members of the same group.
+
+(a) Define the set of all potential outcomes involved in this set up.
+
+(b) Define the direct and spillover effects under the potential outcomes framework.
+
+(c) Using the data set data_spillover.RDS provided on bCourses, estimate the direct and spillover effects.
+
+(d) Should we use inverse propensity weights in this setting? Why / why not?
